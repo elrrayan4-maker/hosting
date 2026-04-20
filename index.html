@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="siteTitle">NexusHost — Premium Game Server Hosting</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;600;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#050810;--bg2:#080d1a;--bg3:#0d1428;--panel:#0b1120;--border:#1a2a4a;--border2:#243560;--accent:#00d4ff;--accent2:#7b2fff;--accent3:#ff3c6e;--green:#00ff88;--yellow:#ffcc00;--text:#c8d8f0;--text2:#6a8aaa;--glow:0 0 24px rgba(0,212,255,.3);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Exo 2',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.025) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0;}
+::-webkit-scrollbar{width:5px;} ::-webkit-scrollbar-track{background:transparent;} ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:68px;background:rgba(5,8,16,.92);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);}
+.logo{font-family:'Rajdhani',sans-serif;font-size:1.8rem;font-weight:700;letter-spacing:3px;text-decoration:none;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.logo em{font-style:normal;-webkit-text-fill-color:var(--accent3);}
+nav ul{list-style:none;display:flex;gap:2rem;}
+nav ul a{color:var(--text2);text-decoration:none;font-size:.88rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;transition:color .2s;}
+nav ul a:hover{color:var(--accent);}
+.nav-right{display:flex;gap:.8rem;align-items:center;}
+.btn{display:inline-block;text-decoration:none;cursor:pointer;border:none;font-family:'Rajdhani',sans-serif;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;transition:all .2s;border-radius:6px;}
+.btn-ghost{padding:8px 22px;border:1px solid var(--accent);color:var(--accent);background:transparent;font-size:.92rem;}
+.btn-ghost:hover{background:rgba(0,212,255,.1);box-shadow:var(--glow);}
+.btn-solid{padding:8px 22px;background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff;font-size:.92rem;}
+.btn-solid:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(123,47,255,.5);}
+.btn-lg{padding:14px 44px;font-size:1.05rem;}
+.btn-full{width:100%;padding:13px;font-size:1rem;border-radius:8px;display:block;text-align:center;}
+.user-bar{display:none;align-items:center;gap:.6rem;background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.18);border-radius:30px;padding:5px 14px;font-size:.83rem;color:var(--accent);font-weight:600;}
+.user-bar.on{display:flex;}
+.u-av{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--accent2),var(--accent));display:flex;align-items:center;justify-content:center;font-size:.7rem;color:#fff;font-weight:700;}
+.logout-btn{background:none;border:none;color:var(--accent3);cursor:pointer;font-size:.72rem;font-weight:700;letter-spacing:1px;}
+@media(max-width:768px){nav ul{display:none;}}
+.hero{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;padding:130px 5% 80px;}
+.hero-canvas{position:absolute;inset:0;}
+.hero-glow{position:absolute;width:900px;height:900px;border-radius:50%;background:radial-gradient(circle,rgba(123,47,255,.14) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:pulse 5s ease-in-out infinite;}
+@keyframes pulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.7}50%{transform:translate(-50%,-50%) scale(1.08);opacity:1}}
+.hero-content{position:relative;z-index:2;max-width:960px;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:.5rem;padding:5px 18px;border:1px solid var(--accent2);border-radius:20px;font-size:.72rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--accent2);background:rgba(123,47,255,.08);margin-bottom:2rem;animation:fadeUp .6s ease both;}
+.hero-eyebrow::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent2);animation:blink 1.5s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.hero h1{font-family:'Rajdhani',sans-serif;font-size:clamp(3rem,8vw,6.5rem);font-weight:700;line-height:.95;margin-bottom:1.6rem;animation:fadeUp .6s ease .1s both;}
+.h1-top{display:block;background:linear-gradient(90deg,#fff 0%,var(--accent) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.h1-bot{display:block;background:linear-gradient(90deg,var(--accent2) 0%,var(--accent3) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero-sub{font-size:1.15rem;color:var(--text2);max-width:600px;margin:0 auto 2.5rem;line-height:1.75;font-weight:300;animation:fadeUp .6s ease .2s both;}
+.hero-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;animation:fadeUp .6s ease .3s both;}
+.hero-stats{display:flex;gap:3rem;justify-content:center;margin-top:4rem;flex-wrap:wrap;animation:fadeUp .6s ease .4s both;}
+.hs-num{font-family:'Rajdhani',sans-serif;font-size:2.3rem;font-weight:700;color:var(--accent);display:block;line-height:1;}
+.hs-lbl{font-size:.72rem;text-transform:uppercase;letter-spacing:2px;color:var(--text2);margin-top:4px;display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+.particle{position:absolute;border-radius:50%;animation:floatUp linear infinite;opacity:0;}
+@keyframes floatUp{0%{transform:translateY(100vh);opacity:0}10%{opacity:.6}90%{opacity:.4}100%{transform:translateY(-10vh);opacity:0}}
+section{position:relative;z-index:1;padding:100px 5%;}
+.s-label{display:block;font-size:.68rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--accent);margin-bottom:.7rem;}
+.s-title{font-family:'Rajdhani',sans-serif;font-size:clamp(2rem,4vw,3.2rem);font-weight:700;color:#fff;margin-bottom:.8rem;}
+.s-sub{font-size:.97rem;color:var(--text2);max-width:520px;line-height:1.75;font-weight:300;}
+.s-head{margin-bottom:3.5rem;}
+#games{background:var(--bg2);}
+.games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:1.5rem;}
+.game-card{position:relative;border-radius:14px;overflow:hidden;cursor:pointer;transition:transform .3s,box-shadow .3s;border:1px solid var(--border);background:var(--panel);aspect-ratio:16/9;}
+.game-card:hover{transform:translateY(-7px) scale(1.015);box-shadow:0 22px 60px rgba(0,0,0,.5),var(--glow);border-color:var(--accent);}
+.gc-bg{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:3.5rem;transition:transform .5s;background-size:cover;background-position:center;}
+.game-card:hover .gc-bg{transform:scale(1.1);}
+.gc-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(5,8,16,.96) 0%,rgba(5,8,16,.2) 65%,transparent 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:1.2rem;}
+.gc-name{font-family:'Rajdhani',sans-serif;font-size:1.4rem;font-weight:700;color:#fff;letter-spacing:1px;}
+.gc-tags{margin-top:.35rem;display:flex;gap:.4rem;flex-wrap:wrap;}
+.gtag{font-size:.65rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:3px 10px;border-radius:20px;}
+.tp{background:rgba(0,255,136,.1);color:var(--green);border:1px solid rgba(0,255,136,.3);}
+.th{background:rgba(255,60,110,.1);color:var(--accent3);border:1px solid rgba(255,60,110,.3);}
+.tn{background:rgba(0,212,255,.1);color:var(--accent);border:1px solid rgba(0,212,255,.3);}
+.gc-btn{margin-top:.7rem;padding:7px 16px;background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff;border:none;border-radius:5px;font-family:'Rajdhani',sans-serif;font-size:.88rem;font-weight:600;letter-spacing:1px;cursor:pointer;opacity:0;transform:translateY(8px);transition:opacity .3s,transform .3s;}
+.game-card:hover .gc-btn{opacity:1;transform:translateY(0);}
+#pricing{background:var(--bg);}
+.filter-row{display:flex;gap:.5rem;margin-bottom:3rem;flex-wrap:wrap;}
+.fb{padding:7px 20px;border:1px solid var(--border2);background:transparent;color:var(--text2);border-radius:30px;font-family:'Rajdhani',sans-serif;font-size:.88rem;font-weight:600;letter-spacing:1px;cursor:pointer;transition:all .2s;}
+.fb:hover,.fb.active{border-color:var(--accent);color:var(--accent);background:rgba(0,212,255,.07);}
+.plans-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem;}
+.plan-card{position:relative;background:var(--panel);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:transform .3s,box-shadow .3s,border-color .3s;display:flex;flex-direction:column;}
+.plan-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent2),var(--accent));opacity:0;transition:opacity .3s;}
+.plan-card:hover{transform:translateY(-7px);box-shadow:0 22px 60px rgba(0,0,0,.4),var(--glow);border-color:var(--border2);}
+.plan-card:hover::before,.plan-card.featured::before{opacity:1;}
+.plan-card.featured{border-color:var(--accent);box-shadow:var(--glow);}
+.plan-hero{position:relative;width:100%;height:160px;overflow:hidden;background:var(--bg3);flex-shrink:0;}
+.plan-hero-bg{width:100%;height:100%;object-fit:cover;display:block;}
+.plan-hero-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:3.5rem;background-size:cover;background-position:center;}
+.plan-hero-grad{position:absolute;inset:0;background:linear-gradient(to top,var(--panel) 0%,transparent 60%);}
+.plan-featured-badge{position:absolute;top:.8rem;right:.8rem;background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff;font-family:'Rajdhani',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:2px;padding:3px 12px;border-radius:20px;text-transform:uppercase;z-index:2;}
+.plan-ribbon{position:absolute;top:.8rem;left:.8rem;font-family:'Rajdhani',sans-serif;font-size:.65rem;font-weight:700;letter-spacing:2px;padding:3px 10px;border-radius:20px;text-transform:uppercase;z-index:2;background:rgba(0,212,255,.12);color:var(--accent);border:1px solid rgba(0,212,255,.3);}
+.plan-body{padding:1.5rem;flex:1;display:flex;flex-direction:column;}
+.plan-gtag{font-size:.68rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:.3rem;}
+.plan-name{font-family:'Rajdhani',sans-serif;font-size:1.55rem;font-weight:700;color:#fff;margin-bottom:.2rem;}
+.plan-desc{font-size:.82rem;color:var(--text2);margin-bottom:1rem;line-height:1.6;min-height:2.4em;}
+.plan-price{display:flex;align-items:flex-end;gap:3px;margin-bottom:1.2rem;}
+.plan-price .sym{font-size:1.1rem;color:var(--accent);margin-bottom:4px;}
+.plan-price .amt{font-family:'Rajdhani',sans-serif;font-size:2.6rem;font-weight:700;color:var(--accent);line-height:1;}
+.plan-price .per{font-size:.82rem;color:var(--text2);margin-bottom:5px;}
+.plan-specs{list-style:none;display:flex;flex-direction:column;gap:.55rem;margin-bottom:1.2rem;flex:1;}
+.plan-specs li{display:flex;align-items:center;gap:.55rem;font-size:.875rem;color:var(--text2);}
+.si{width:16px;height:16px;color:var(--accent);flex-shrink:0;}
+.sv{color:var(--text);font-weight:600;}
+.plan-extras{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.2rem;}
+.pet{font-size:.65rem;font-weight:700;letter-spacing:1px;padding:3px 9px;border-radius:12px;background:rgba(0,212,255,.07);border:1px solid rgba(0,212,255,.18);color:var(--accent);}
+#features{background:var(--bg2);}
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1.4rem;margin-top:3rem;}
+.feat-card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:1.7rem;transition:border-color .3s,transform .3s;}
+.feat-card:hover{border-color:var(--accent2);transform:translateY(-4px);}
+.feat-icon{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:.9rem;font-size:1.4rem;}
+.fi-c{background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.25);}
+.fi-p{background:rgba(123,47,255,.1);border:1px solid rgba(123,47,255,.25);}
+.fi-r{background:rgba(255,60,110,.1);border:1px solid rgba(255,60,110,.25);}
+.fi-g{background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.25);}
+.feat-title{font-family:'Rajdhani',sans-serif;font-size:1.1rem;font-weight:700;color:#fff;margin-bottom:.4rem;}
+.feat-desc{font-size:.85rem;color:var(--text2);line-height:1.65;}
+#testimonials{background:var(--bg);}
+.testi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.4rem;margin-top:3rem;}
+.testi-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:1.6rem;transition:border-color .3s;}
+.testi-card:hover{border-color:var(--border2);}
+.testi-stars{color:var(--yellow);font-size:1rem;margin-bottom:.8rem;letter-spacing:2px;}
+.testi-text{font-size:.88rem;color:var(--text2);line-height:1.75;margin-bottom:1rem;font-style:italic;}
+.testi-author{display:flex;align-items:center;gap:.7rem;}
+.testi-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;color:#fff;flex-shrink:0;}
+.testi-name{font-family:'Rajdhani',sans-serif;font-size:.95rem;font-weight:700;color:#fff;}
+.testi-game{font-size:.72rem;color:var(--text2);}
+#mytickets{background:var(--bg2);}
+.tcWrap{display:none;}
+.tcWrap.on{display:block;}
+.t-item{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:1.2rem 1.4rem;margin-bottom:.9rem;}
+.t-top{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;margin-bottom:.4rem;}
+.t-status{font-size:.65rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 9px;border-radius:20px;}
+.ts-open{background:rgba(0,212,255,.1);color:var(--accent);border:1px solid rgba(0,212,255,.3);}
+.ts-pending{background:rgba(255,204,0,.1);color:var(--yellow);border:1px solid rgba(255,204,0,.3);}
+.ts-closed{background:rgba(106,138,170,.1);color:var(--text2);border:1px solid var(--border2);}
+.t-subj{font-family:'Rajdhani',sans-serif;font-size:.95rem;font-weight:700;color:#fff;}
+.t-date{margin-left:auto;font-size:.75rem;color:var(--text2);}
+.t-meta{font-size:.78rem;color:var(--text2);margin-bottom:.4rem;}
+.t-msg{font-size:.85rem;color:var(--text2);line-height:1.6;}
+.t-reply{margin-top:.7rem;padding:.7rem 1rem;background:rgba(0,212,255,.04);border-left:3px solid var(--accent);border-radius:4px;}
+.t-reply-from{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin-bottom:3px;}
+.t-reply-msg{font-size:.85rem;color:var(--text);line-height:1.6;}
+footer{background:var(--bg2);border-top:1px solid var(--border);padding:4rem 5% 2rem;position:relative;z-index:1;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3rem;}
+@media(max-width:768px){.footer-grid{grid-template-columns:1fr 1fr;}}
+.ft-brand p{font-size:.85rem;color:var(--text2);line-height:1.75;margin-top:1rem;max-width:280px;}
+.ft-col h4{font-family:'Rajdhani',sans-serif;font-size:.95rem;font-weight:700;color:#fff;letter-spacing:2px;text-transform:uppercase;margin-bottom:1.1rem;}
+.ft-col ul{list-style:none;display:flex;flex-direction:column;gap:.55rem;}
+.ft-col ul a{font-size:.84rem;color:var(--text2);text-decoration:none;transition:color .2s;}
+.ft-col ul a:hover{color:var(--accent);}
+.footer-bottom{border-top:1px solid var(--border);padding-top:1.8rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+.footer-bottom p{font-size:.78rem;color:var(--text2);}
+.status-pill{display:flex;align-items:center;gap:.5rem;font-size:.78rem;color:var(--green);}
+.sdot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:blink 2s infinite;}
+.ovl{position:fixed;inset:0;background:rgba(0,0,0,.86);backdrop-filter:blur(12px);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s;}
+.ovl.open{opacity:1;pointer-events:all;}
+.modal{background:var(--bg3);border:1px solid var(--border2);border-radius:16px;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;transform:scale(.92) translateY(18px);transition:transform .3s;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;}
+.ovl.open .modal{transform:scale(1) translateY(0);}
+.modal-lg{max-width:680px;}
+.mh{padding:1.4rem 2rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.mh h3{font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:700;color:#fff;}
+.mcls{width:30px;height:30px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.mcls:hover{border-color:var(--accent3);color:var(--accent3);}
+.mb{padding:1.5rem 2rem 2rem;}
+.form-group{margin-bottom:1.1rem;}
+.form-label{display:block;font-size:.73rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text2);margin-bottom:.45rem;}
+.form-input{width:100%;padding:10px 13px;background:var(--panel);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:.88rem;outline:none;transition:border-color .2s,box-shadow .2s;}
+.form-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,212,255,.1);}
+.form-input::placeholder{color:var(--text2);opacity:.45;}
+select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='%236a8aaa' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;padding-right:34px;cursor:pointer;}
+select.form-input option{background:var(--bg3);}
+textarea.form-input{resize:vertical;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+@media(max-width:500px){.form-row{grid-template-columns:1fr;}}
+.form-check{display:flex;align-items:flex-start;gap:.65rem;margin-bottom:1rem;}
+.form-check input{margin-top:3px;accent-color:var(--accent);width:15px;height:15px;}
+.form-check label{font-size:.83rem;color:var(--text2);line-height:1.55;}
+.plan-info-bar{display:flex;align-items:center;gap:1rem;padding:.9rem 1.1rem;background:var(--panel);border:1px solid var(--border);border-radius:8px;margin-bottom:1.4rem;}
+.pi-icon{font-size:1.8rem;width:44px;text-align:center;}
+.pi-name{font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;color:#fff;}
+.pi-price{font-size:.82rem;color:var(--accent);font-weight:600;}
+.auth-tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:1.4rem;}
+.at{flex:1;padding:9px;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--text2);font-family:'Rajdhani',sans-serif;font-size:.92rem;font-weight:700;letter-spacing:1px;cursor:pointer;transition:all .2s;text-transform:uppercase;margin-bottom:-1px;}
+.at.active{border-bottom-color:var(--accent);color:var(--accent);}
+.success-wrap{display:none;text-align:center;padding:2rem 1rem;}
+.sw-icon{font-size:3.5rem;margin-bottom:.8rem;display:block;animation:popIn .4s ease;}
+@keyframes popIn{0%{transform:scale(0)}80%{transform:scale(1.15)}100%{transform:scale(1)}}
+.success-wrap h3{font-family:'Rajdhani',sans-serif;font-size:1.4rem;color:var(--green);margin-bottom:.4rem;}
+.success-wrap p{font-size:.86rem;color:var(--text2);line-height:1.6;}
+.toast{position:fixed;bottom:26px;right:26px;background:var(--bg3);border:1px solid var(--green);border-radius:10px;padding:.9rem 1.4rem;z-index:3000;transform:translateY(80px);opacity:0;transition:all .4s cubic-bezier(.34,1.56,.64,1);max-width:300px;}
+.toast.on{transform:translateY(0);opacity:1;}
+.toast.err{border-color:var(--accent3);}
+.t-ttl{font-family:'Rajdhani',sans-serif;font-size:.95rem;font-weight:700;color:var(--green);margin-bottom:2px;}
+.toast.err .t-ttl{color:var(--accent3);}
+.t-msg-body{font-size:.82rem;color:var(--text2);}
+</style>
+</head>
+<body>
+<nav>
+  <a href="#" class="logo" id="navLogo">NEXUS<em>HOST</em></a>
+  <ul>
+    <li><a href="#games">Games</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#mytickets" id="navTickets" style="display:none">My Tickets</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="user-bar" id="uBar"><div class="u-av" id="uAv">?</div><span id="uName">User</span><button class="logout-btn" onclick="doLogout()">LOGOUT</button></div>
+    <button class="btn btn-ghost" onclick="openOvl('ovlLogin')" id="loginBtn">LOGIN</button>
+    <button class="btn btn-solid" onclick="openTicket()" id="ticketBtn" style="display:none">OPEN TICKET</button>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-canvas" id="heroCanvas"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow" id="heroBadge">⚡ PREMIUM GAME SERVER HOSTING</div>
+    <h1><span class="h1-top" id="heroLine1">DOMINATE YOUR</span><span class="h1-bot" id="heroLine2">GAME WORLD</span></h1>
+    <p class="hero-sub" id="heroSub">Deploy blazing-fast game servers in seconds. Minecraft, Rust, GTA V, ARK, CS2 and more.</p>
+    <div class="hero-btns">
+      <a href="#pricing" class="btn btn-solid btn-lg">GET STARTED</a>
+      <a href="#games" class="btn btn-ghost btn-lg">VIEW GAMES</a>
+    </div>
+    <div class="hero-stats">
+      <div><span class="hs-num" data-target="12400">0</span><span class="hs-lbl">Active Servers</span></div>
+      <div><span class="hs-num" data-target="99.9">0</span><span class="hs-lbl">% Uptime</span></div>
+      <div><span class="hs-num" data-target="15">0</span><span class="hs-lbl">Locations</span></div>
+      <div><span class="hs-num" data-target="47000">0</span><span class="hs-lbl">Happy Gamers</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="games"><div class="s-head"><span class="s-label">SUPPORTED GAMES</span><h2 class="s-title">Choose Your Game</h2><p class="s-sub">Optimized hardware for each title.</p></div><div class="games-grid" id="gamesGrid"></div></section>
+
+<section id="pricing"><div class="s-head"><span class="s-label">PRICING PLANS</span><h2 class="s-title">Pick Your Plan</h2><p class="s-sub">Flexible tiers for every budget. Scale anytime.</p></div><div class="filter-row" id="filterRow"></div><div class="plans-grid" id="plansGrid"></div></section>
+
+<section id="features"><div class="s-head"><span class="s-label">WHY NEXUSHOST</span><h2 class="s-title">Built for Gamers</h2><p class="s-sub">Enterprise-grade infrastructure designed for game servers.</p></div><div class="feat-grid" id="featGrid"></div></section>
+
+<section id="testimonials"><div class="s-head"><span class="s-label">COMMUNITY</span><h2 class="s-title">Trusted Worldwide</h2><p class="s-sub">Over 47,000 gamers choose NexusHost.</p></div><div class="testi-grid" id="testiGrid"></div></section>
+
+<section id="mytickets">
+  <div class="s-head"><span class="s-label">SUPPORT</span><h2 class="s-title">My Tickets</h2><p class="s-sub">Track your support requests and admin replies.</p></div>
+  <div id="tLoginPrompt" style="text-align:center;padding:2.5rem 0;color:var(--text2);">
+    <p style="margin-bottom:1.2rem;">Log in to view and manage your support tickets.</p>
+    <button class="btn btn-solid" onclick="openOvl('ovlLogin')">LOGIN TO CONTINUE</button>
+  </div>
+  <div class="tcWrap" id="tcWrap">
+    <button class="btn btn-solid" style="margin-bottom:1.4rem;" onclick="openTicket()">+ CREATE TICKET</button>
+    <div id="ticketList"></div>
+    <p id="noTickets" style="color:var(--text2);font-size:.88rem;display:none;">No tickets yet.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-grid">
+    <div class="ft-brand"><a href="#" class="logo" id="footerLogo">NEXUS<em>HOST</em></a><p id="footerDesc">Premium game server hosting. Trusted by 47,000+ gamers worldwide.</p></div>
+    <div class="ft-col"><h4>Games</h4><ul id="footerGames"></ul></div>
+    <div class="ft-col"><h4>Company</h4><ul><li><a href="#">About</a></li><li><a href="#">Blog</a></li><li><a href="#">Status</a></li><li><a href="admin.html">Admin</a></li></ul></div>
+    <div class="ft-col"><h4>Support</h4><ul><li><a href="#">Documentation</a></li><li><a href="#" id="discordLink">Discord</a></li><li><a href="#mytickets">My Tickets</a></li><li><a href="#">Terms</a></li></ul></div>
+  </div>
+  <div class="footer-bottom"><p id="footerCopy">© 2025 NexusHost. All rights reserved.</p><div class="status-pill"><div class="sdot"></div><span>All systems operational</span></div></div>
+</footer>
+
+<!-- ORDER MODAL -->
+<div class="ovl" id="ovlOrder">
+  <div class="modal modal-lg">
+    <div class="mh"><h3>Complete Your Order</h3><button class="mcls" onclick="closeOvl('ovlOrder')">✕</button></div>
+    <div class="mb">
+      <div id="orderFormWrap">
+        <div class="plan-info-bar"><div class="pi-icon" id="piIcon">🎮</div><div><div class="pi-name" id="piName">Plan</div><div class="pi-price" id="piPrice">$0/mo</div></div></div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Full Name *</label><input type="text" class="form-input" id="oName" placeholder="John Doe"></div>
+          <div class="form-group"><label class="form-label">Email *</label><input type="email" class="form-input" id="oEmail" placeholder="john@email.com"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Discord Username *</label><input type="text" class="form-input" id="oDiscord" placeholder="@username"></div>
+          <div class="form-group"><label class="form-label">Phone (Optional)</label><input type="tel" class="form-input" id="oPhone" placeholder="+1 555 000 0000"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Server Location *</label>
+            <select class="form-input" id="oLocation">
+              <option value="">Select location...</option>
+              <option>🇺🇸 US East (New York)</option><option>🇺🇸 US West (Los Angeles)</option>
+              <option>🇩🇪 EU Central (Frankfurt)</option><option>🇬🇧 EU West (London)</option>
+              <option>🇸🇬 Asia (Singapore)</option><option>🇦🇺 Oceania (Sydney)</option>
+              <option>🇧🇷 South America (São Paulo)</option><option>🇯🇵 Japan (Tokyo)</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Billing Cycle</label>
+            <select class="form-input" id="oBilling">
+              <option value="monthly">Monthly</option>
+              <option value="quarterly">Quarterly (5% off)</option>
+              <option value="semi">Semi-Annual (10% off)</option>
+              <option value="annual">Annual (20% off)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group"><label class="form-label">Server Name</label><input type="text" class="form-input" id="oServerName" placeholder="My Awesome Server"></div>
+        <div class="form-group"><label class="form-label">Additional Notes</label><textarea class="form-input" id="oNotes" rows="3" placeholder="Mods, special requirements..."></textarea></div>
+        <div class="form-check"><input type="checkbox" id="oTerms"><label for="oTerms">I agree to the Terms of Service and refund policy. Server setup within 24 hours.</label></div>
+        <button class="btn btn-solid btn-full" onclick="submitOrder()">🚀 CONFIRM ORDER</button>
+      </div>
+      <div class="success-wrap" id="orderSuccess"><span class="sw-icon">✅</span><h3>Order Submitted!</h3><p>Your order is sent to the admin team. We'll contact you via Discord and email within 24 hours.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN MODAL -->
+<div class="ovl" id="ovlLogin">
+  <div class="modal">
+    <div class="mh"><h3>Welcome to NexusHost</h3><button class="mcls" onclick="closeOvl('ovlLogin')">✕</button></div>
+    <div class="mb">
+      <div class="auth-tabs"><button class="at active" id="tabLogin" onclick="switchAuthTab('login')">LOGIN</button><button class="at" id="tabReg" onclick="switchAuthTab('reg')">REGISTER</button></div>
+      <div id="loginForm">
+        <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="liEmail" placeholder="your@email.com"></div>
+        <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" id="liPass" placeholder="••••••••"></div>
+        <button class="btn btn-solid btn-full" onclick="doLogin()">LOGIN</button>
+      </div>
+      <div id="regForm" style="display:none">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Full Name</label><input type="text" class="form-input" id="rgName" placeholder="John Doe"></div>
+          <div class="form-group"><label class="form-label">Discord</label><input type="text" class="form-input" id="rgDiscord" placeholder="@username"></div>
+        </div>
+        <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="rgEmail" placeholder="your@email.com"></div>
+        <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" id="rgPass" placeholder="••••••••"></div>
+        <button class="btn btn-solid btn-full" onclick="doRegister()">CREATE ACCOUNT</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TICKET MODAL -->
+<div class="ovl" id="ovlTicket">
+  <div class="modal">
+    <div class="mh"><h3>Open Support Ticket</h3><button class="mcls" onclick="closeOvl('ovlTicket')">✕</button></div>
+    <div class="mb">
+      <div id="ticketFormWrap">
+        <div style="background:rgba(0,212,255,.05);border:1px solid rgba(0,212,255,.12);border-radius:8px;padding:.9rem 1.1rem;margin-bottom:1.3rem;font-size:.82rem;color:var(--text2);line-height:1.6;">💬 Average response time: under 15 minutes.</div>
+        <div class="form-group"><label class="form-label">Category *</label>
+          <select class="form-input" id="tkCat">
+            <option value="">Select category...</option>
+            <option>Server Setup Issue</option><option>Billing Question</option>
+            <option>Technical Problem</option><option>Upgrade / Downgrade</option>
+            <option>Server Performance</option><option>Mod Installation</option>
+            <option>Cancellation Request</option><option>Other</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Subject *</label><input type="text" class="form-input" id="tkSubj" placeholder="Brief description"></div>
+        <div class="form-group"><label class="form-label">Priority</label>
+          <select class="form-input" id="tkPrio">
+            <option value="low">Low</option><option value="medium" selected>Medium</option>
+            <option value="high">High</option><option value="critical">Critical — Server Down</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Message *</label><textarea class="form-input" id="tkMsg" rows="5" placeholder="Describe your issue in detail..."></textarea></div>
+        <button class="btn btn-solid btn-full" onclick="submitTicket()">📨 SUBMIT TICKET</button>
+      </div>
+      <div class="success-wrap" id="ticketSuccess"><span class="sw-icon">🎫</span><h3>Ticket Created!</h3><p>Track it in "My Tickets". We'll notify you on Discord when we reply.</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><div class="t-ttl" id="tTitle"></div><div class="t-msg-body" id="tMsg"></div></div>
+
+<script>
+const CFG_KEY='nexushost_config';
+function getCfg(){try{const r=localStorage.getItem(CFG_KEY);return r?JSON.parse(r):null;}catch(e){return null;}}
+
+const DEFAULTS={
+  site:{name:'NexusHost',tagline:'Premium Game Server Hosting',logo:'NEXUSHOST',desc:'Premium game server hosting with enterprise-grade hardware. Trusted by 47,000+ gamers worldwide.',discord:'',copyright:'© 2025 NexusHost. All rights reserved.'},
+  hero:{badge:'⚡ PREMIUM GAME SERVER HOSTING',line1:'DOMINATE YOUR',line2:'GAME WORLD',sub:'Deploy blazing-fast game servers in seconds. Minecraft, Rust, GTA V, ARK, CS2 and more. 99.9% uptime guarantee with instant setup.'},
+  games:[
+    {id:'minecraft',name:'Minecraft',icon:'🟩',tag:'POPULAR',tagType:'tp',bg:'linear-gradient(135deg,#2d5a27,#1a3d1a,#4a2c0f)',image:'',visible:true},
+    {id:'rust',name:'Rust',icon:'🔥',tag:'HOT',tagType:'th',bg:'linear-gradient(135deg,#4a1a0a,#8b3a1a,#2a1a0a)',image:'',visible:true},
+    {id:'gta',name:'GTA V (FiveM)',icon:'🚗',tag:'POPULAR',tagType:'tp',bg:'linear-gradient(135deg,#1a1a2e,#16213e,#0f3460)',image:'',visible:true},
+    {id:'ark',name:'ARK: Survival',icon:'🦕',tag:'NEW',tagType:'tn',bg:'linear-gradient(135deg,#0d2b1a,#1a4a2a,#0a1a10)',image:'',visible:true},
+    {id:'cs2',name:'Counter-Strike 2',icon:'🎯',tag:'HOT',tagType:'th',bg:'linear-gradient(135deg,#1a0d2e,#2d1a4a,#1a2d4a)',image:'',visible:true},
+    {id:'valheim',name:'Valheim',icon:'⚔️',tag:'POPULAR',tagType:'tp',bg:'linear-gradient(135deg,#0a1a2e,#1a3a5a,#0d2a4a)',image:'',visible:true},
+    {id:'palworld',name:'Palworld',icon:'🐾',tag:'TRENDING',tagType:'th',bg:'linear-gradient(135deg,#1a2e0a,#2e4a1a,#0a2e1a)',image:'',visible:true},
+    {id:'tf2',name:'Team Fortress 2',icon:'⚙️',tag:'POPULAR',tagType:'tp',bg:'linear-gradient(135deg,#4a2a0a,#8b4a1a,#3a1a0a)',image:'',visible:true},
+  ],
+  plans:[
+    {id:'mc1',game:'minecraft',gameName:'Minecraft',icon:'🟩',name:'Creeper',price:4.99,ram:'2GB',cpu:'2 vCPU',storage:'20GB SSD',players:10,bandwidth:'1Gbps',ddos:true,backups:'Weekly',support:'Standard',image:'',featured:false,ribbon:'',desc:'Perfect for small friend groups.',extras:['Java & Bedrock','1-Click Mods','Control Panel'],visible:true},
+    {id:'mc2',game:'minecraft',gameName:'Minecraft',icon:'🟩',name:'Enderman',price:9.99,ram:'4GB',cpu:'4 vCPU',storage:'40GB SSD',players:30,bandwidth:'1Gbps',ddos:true,backups:'Daily',support:'Priority',image:'',featured:true,ribbon:'BEST VALUE',desc:'Most popular for active communities.',extras:['Java & Bedrock','Forge/Fabric','Custom Domain'],visible:true},
+    {id:'mc3',game:'minecraft',gameName:'Minecraft',icon:'🟩',name:'Dragon',price:19.99,ram:'8GB',cpu:'6 vCPU',storage:'80GB SSD',players:100,bandwidth:'2Gbps',ddos:true,backups:'Daily',support:'Premium 24/7',image:'',featured:false,ribbon:'',desc:'For large public servers.',extras:['All Features','MySQL DB','Plugin Manager','FTP Access'],visible:true},
+    {id:'rust1',game:'rust',gameName:'Rust',icon:'🔥',name:'Survivor',price:12.99,ram:'4GB',cpu:'4 vCPU',storage:'40GB SSD',players:50,bandwidth:'1Gbps',ddos:true,backups:'Weekly',support:'Standard',image:'',featured:false,ribbon:'',desc:'Small private Rust server.',extras:['Oxide/uMod','Wipe Scheduler'],visible:true},
+    {id:'rust2',game:'rust',gameName:'Rust',icon:'🔥',name:'Warlord',price:24.99,ram:'8GB',cpu:'6 vCPU',storage:'80GB SSD',players:100,bandwidth:'2Gbps',ddos:true,backups:'Daily',support:'Priority',image:'',featured:true,ribbon:'MOST POPULAR',desc:'Ideal for competitive Rust.',extras:['Oxide/uMod','Custom Maps','Plugins'],visible:true},
+    {id:'rust3',game:'rust',gameName:'Rust',icon:'🔥',name:'Emperor',price:44.99,ram:'16GB',cpu:'8 vCPU',storage:'160GB SSD',players:200,bandwidth:'10Gbps',ddos:true,backups:'Daily',support:'Premium 24/7',image:'',featured:false,ribbon:'',desc:'High-performance public Rust.',extras:['Everything','Dedicated IP','Rust+'],visible:true},
+    {id:'gta1',game:'gta',gameName:'GTA V',icon:'🚗',name:'Rookie',price:14.99,ram:'4GB',cpu:'4 vCPU',storage:'60GB SSD',players:32,bandwidth:'1Gbps',ddos:true,backups:'Weekly',support:'Standard',image:'',featured:false,ribbon:'',desc:'Entry-level FiveM server.',extras:['FiveM/RAGE','ESX/QBCore'],visible:true},
+    {id:'gta2',game:'gta',gameName:'GTA V',icon:'🚗',name:'Kingpin',price:29.99,ram:'8GB',cpu:'6 vCPU',storage:'100GB SSD',players:64,bandwidth:'2Gbps',ddos:true,backups:'Daily',support:'Priority',image:'',featured:true,ribbon:'BEST VALUE',desc:'Perfect for RP communities.',extras:['FiveM/RAGE','MySQL','Custom Scripts'],visible:true},
+    {id:'gta3',game:'gta',gameName:'GTA V',icon:'🚗',name:'Godfather',price:59.99,ram:'16GB',cpu:'10 vCPU',storage:'200GB SSD',players:128,bandwidth:'10Gbps',ddos:true,backups:'Daily',support:'Premium 24/7',image:'',featured:false,ribbon:'',desc:'Large-scale RP server.',extras:['Everything','Dedicated IP','99.99% SLA'],visible:true},
+    {id:'ark1',game:'ark',gameName:'ARK',icon:'🦕',name:'Tribe Starter',price:9.99,ram:'4GB',cpu:'4 vCPU',storage:'60GB SSD',players:20,bandwidth:'1Gbps',ddos:true,backups:'Weekly',support:'Standard',image:'',featured:false,ribbon:'',desc:'Small tribe private server.',extras:['Mod Support','Cluster Ready'],visible:true},
+    {id:'ark2',game:'ark',gameName:'ARK',icon:'🦕',name:'Alpha Tribe',price:22.99,ram:'8GB',cpu:'6 vCPU',storage:'120GB SSD',players:70,bandwidth:'2Gbps',ddos:true,backups:'Daily',support:'Priority',image:'',featured:true,ribbon:'POPULAR',desc:'Full-featured ARK experience.',extras:['Cluster Maps','Mod Manager'],visible:true},
+    {id:'cs1',game:'cs2',gameName:'CS2',icon:'🎯',name:'Casual',price:5.99,ram:'2GB',cpu:'2 vCPU',storage:'20GB SSD',players:12,bandwidth:'1Gbps',ddos:true,backups:'Weekly',support:'Standard',image:'',featured:false,ribbon:'',desc:'10-man private server.',extras:['128-Tick','Workshop Maps'],visible:true},
+    {id:'cs2p',game:'cs2',gameName:'CS2',icon:'🎯',name:'Competitive',price:11.99,ram:'4GB',cpu:'4 vCPU',storage:'40GB SSD',players:24,bandwidth:'1Gbps',ddos:true,backups:'Daily',support:'Priority',image:'',featured:true,ribbon:'RECOMMENDED',desc:'Tournament-grade CS2 server.',extras:['128-Tick','GOTV','MatchZy','Stats'],visible:true},
+    {id:'val1',game:'valheim',gameName:'Valheim',icon:'⚔️',name:'Viking',price:7.99,ram:'4GB',cpu:'2 vCPU',storage:'30GB SSD',players:10,bandwidth:'1Gbps',ddos:true,backups:'Weekly',support:'Standard',image:'',featured:false,ribbon:'',desc:'Small Viking crew server.',extras:['Mod Support','Auto-Backup'],visible:true},
+    {id:'val2',game:'valheim',gameName:'Valheim',icon:'⚔️',name:'Jarl',price:14.99,ram:'8GB',cpu:'4 vCPU',storage:'60GB SSD',players:30,bandwidth:'1Gbps',ddos:true,backups:'Daily',support:'Priority',image:'',featured:true,ribbon:'POPULAR',desc:'Large Valheim community.',extras:['BepInEx','Custom Mods'],visible:true},
+    {id:'pal1',game:'palworld',gameName:'Palworld',icon:'🐾',name:'Trainer',price:8.99,ram:'4GB',cpu:'4 vCPU',storage:'40GB SSD',players:16,bandwidth:'1Gbps',ddos:true,backups:'Weekly',support:'Standard',image:'',featured:false,ribbon:'',desc:'Play with friends.',extras:['Auto-Updates','Easy Setup'],visible:true},
+    {id:'pal2',game:'palworld',gameName:'Palworld',icon:'🐾',name:'Master',price:17.99,ram:'8GB',cpu:'6 vCPU',storage:'80GB SSD',players:32,bandwidth:'2Gbps',ddos:true,backups:'Daily',support:'Priority',image:'',featured:true,ribbon:'BEST VALUE',desc:'Full guild experience.',extras:['Priority Hardware','Daily Backups'],visible:true},
+    {id:'tf1',game:'tf2',gameName:'TF2',icon:'⚙️',name:'Mann Co.',price:6.99,ram:'2GB',cpu:'2 vCPU',storage:'20GB SSD',players:12,bandwidth:'1Gbps',ddos:true,backups:'Weekly',support:'Standard',image:'',featured:false,ribbon:'',desc:'Classic TF2 server.',extras:['SourceMod','TF2 Plugins'],visible:true},
+    {id:'tf2b',game:'tf2',gameName:'TF2',icon:'⚙️',name:'Saxton Hale',price:13.99,ram:'4GB',cpu:'4 vCPU',storage:'40GB SSD',players:32,bandwidth:'1Gbps',ddos:true,backups:'Daily',support:'Priority',image:'',featured:true,ribbon:'RECOMMENDED',desc:'Full TF2 community server.',extras:['SourceMod','MetaMod','Custom Maps'],visible:true},
+  ],
+  features:[
+    {icon:'⚡',style:'fi-c',title:'Instant Deployment',desc:'Your server is live in under 60 seconds. Automated setup, no technical knowledge needed.'},
+    {icon:'🛡️',style:'fi-p',title:'DDoS Protection',desc:'Multi-layer DDoS mitigation up to 1Tbps. Play without interruption.'},
+    {icon:'🌍',style:'fi-r',title:'15 Global Locations',desc:'Servers in North America, Europe, Asia, and Oceania for the lowest latency.'},
+    {icon:'📊',style:'fi-g',title:'Real-Time Dashboard',desc:'Monitor CPU, RAM, and player count with our full control panel.'},
+    {icon:'💾',style:'fi-c',title:'Daily Backups',desc:'Automatic daily backups with 7-day retention. One-click restore.'},
+    {icon:'🎮',style:'fi-p',title:'Mod Support',desc:'One-click mod installation. Forge, Fabric, Oxide, SourceMod and more.'},
+    {icon:'💬',style:'fi-r',title:'24/7 Support',desc:'Dedicated support via Discord and ticket system. Under 15-min response.'},
+    {icon:'🔄',style:'fi-g',title:'99.9% Uptime SLA',desc:'Guaranteed uptime with redundant power and hardware failover.'},
+  ],
+  testimonials:[
+    {name:'Alex M.',game:'Minecraft Server',av:'A',color:'#00d4ff',stars:5,text:'Been with NexusHost for over a year. The performance is insane and support always replies super fast.'},
+    {name:'Sasha K.',game:'Rust Server',av:'S',color:'#7b2fff',stars:5,text:'Switched from a competitor and the difference is night and day. My Rust server runs buttery smooth now.'},
+    {name:'Diego R.',game:'FiveM Server',av:'D',color:'#ff3c6e',stars:5,text:'Running a 64-player FiveM RP server with zero issues. Setup was literally 5 minutes.'},
+    {name:'Jamie L.',game:'ARK Server',av:'J',color:'#00ff88',stars:5,text:'The cluster setup support was amazing. They walked me through everything.'},
+    {name:'Priya N.',game:'Valheim Server',av:'P',color:'#ffcc00',stars:5,text:'Super easy to use and the server has been up 24/7 for 3 months straight.'},
+    {name:'Tyler H.',game:'CS2 Server',av:'T',color:'#ff8c00',stars:5,text:'128-tick server with rock-solid uptime. Our team uses it for scrims every day.'},
+  ]
+};
+
+let selectedPlan=null,currentFilter='all';
+
+function D(){const c=getCfg();return c||DEFAULTS;}
+
+function buildSite(){
+  const d=D(),site=d.site||{},hero=d.hero||{};
+  document.title=(site.name||'NexusHost')+' — '+(site.tagline||'Game Hosting');
+  const logo=site.logo||'NEXUSHOST',half=Math.ceil(logo.length*.6);
+  ['navLogo','footerLogo'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=logo.substring(0,half)+'<em>'+logo.substring(half)+'</em>';});
+  setText('footerDesc',site.desc);setText('footerCopy',site.copyright);
+  const dl=document.getElementById('discordLink');if(dl&&site.discord)dl.href=site.discord;
+  setText('heroBadge',hero.badge);setText('heroLine1',hero.line1);setText('heroLine2',hero.line2);setText('heroSub',hero.sub);
+  buildGames(d.games||DEFAULTS.games);
+  buildFilters(d.plans||DEFAULTS.plans);
+  buildPlans(d.plans||DEFAULTS.plans,currentFilter);
+  buildFeatures(d.features||DEFAULTS.features);
+  buildTestimonials(d.testimonials||DEFAULTS.testimonials);
+  buildFooterGames(d.games||DEFAULTS.games);
+}
+
+function setText(id,v){const el=document.getElementById(id);if(el&&v!==undefined)el.textContent=v;}
+
+function buildGames(games){
+  document.getElementById('gamesGrid').innerHTML=games.filter(g=>g.visible!==false).map(g=>{
+    const bs=g.image?`background-image:url('${g.image}');background-size:cover;background-position:center;`:`background:${g.bg||'#0d1428'};`;
+    return`<div class="game-card" onclick="scrollToGame('${g.id}')"><div class="gc-bg" style="${bs}">${g.image?'':g.icon}</div><div class="gc-overlay"><div class="gc-name">${g.name}</div><div class="gc-tags"><span class="gtag ${g.tagType||'tp'}">${g.tag||'POPULAR'}</span></div><button class="gc-btn">View Plans →</button></div></div>`;
+  }).join('');
+}
+
+function buildFilters(plans){
+  const games=[...new Set(plans.filter(p=>p.visible!==false).map(p=>p.game))];
+  document.getElementById('filterRow').innerHTML=`<button class="fb ${currentFilter==='all'?'active':''}" onclick="setFilter('all')">All Games</button>`+games.map(g=>{const p=plans.find(x=>x.game===g);return`<button class="fb ${currentFilter===g?'active':''}" onclick="setFilter('${g}')">${p?p.gameName:g}</button>`;}).join('');
+}
+
+function setFilter(f){currentFilter=f;const d=D();buildFilters(d.plans||DEFAULTS.plans);buildPlans(d.plans||DEFAULTS.plans,f);}
+
+function buildPlans(plans,filter='all'){
+  const filtered=filter==='all'?plans.filter(p=>p.visible!==false):plans.filter(p=>p.game===filter&&p.visible!==false);
+  const SI='<svg class="si" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>';
+  document.getElementById('plansGrid').innerHTML=filtered.map(p=>{
+    const imgEl=p.image?`<img class="plan-hero-bg" src="${p.image}" alt="${p.name}">`:`<div class="plan-hero-ph" style="background:${getGB(p.game)}">${p.icon}</div>`;
+    return`<div class="plan-card ${p.featured?'featured':''}" id="plan-${p.id}">
+      <div class="plan-hero">${imgEl}<div class="plan-hero-grad"></div>${p.featured?'<div class="plan-featured-badge">BEST VALUE</div>':''}${p.ribbon?`<div class="plan-ribbon">${p.ribbon}</div>`:''}</div>
+      <div class="plan-body">
+        <div class="plan-gtag">${p.gameName}</div>
+        <div class="plan-name">${p.name}</div>
+        <div class="plan-desc">${p.desc||''}</div>
+        <div class="plan-price"><span class="sym">$</span><span class="amt">${p.price}</span><span class="per">/mo</span></div>
+        <ul class="plan-specs">
+          <li>${SI}RAM: <span class="sv">${p.ram}</span></li>
+          <li>${SI}CPU: <span class="sv">${p.cpu}</span></li>
+          <li>${SI}Storage: <span class="sv">${p.storage}</span></li>
+          <li>${SI}Players: <span class="sv">Up to ${p.players}</span></li>
+          <li>${SI}Bandwidth: <span class="sv">${p.bandwidth||'1Gbps'}</span></li>
+          <li>${SI}Backups: <span class="sv">${p.backups||'Daily'}</span></li>
+          <li>${SI}Support: <span class="sv">${p.support||'24/7'}</span></li>
+          ${p.ddos?`<li>${SI}DDoS Protection: <span class="sv">Included</span></li>`:''}
+        </ul>
+        ${(p.extras||[]).length?`<div class="plan-extras">${(p.extras||[]).map(e=>`<span class="pet">${e}</span>`).join('')}</div>`:''}
+        <button class="btn btn-solid btn-full" onclick="selectPlan('${p.id}')">SELECT PLAN</button>
+      </div>
+    </div>`;
+  }).join('')||'<div style="text-align:center;padding:3rem;color:var(--text2);grid-column:1/-1;">No plans available for this game yet.</div>';
+}
+
+function getGB(id){const m={minecraft:'linear-gradient(135deg,#2d5a27,#1a3d1a)',rust:'linear-gradient(135deg,#4a1a0a,#8b3a1a)',gta:'linear-gradient(135deg,#1a1a2e,#0f3460)',ark:'linear-gradient(135deg,#0d2b1a,#1a4a2a)',cs2:'linear-gradient(135deg,#1a0d2e,#2d1a4a)',valheim:'linear-gradient(135deg,#0a1a2e,#1a3a5a)',palworld:'linear-gradient(135deg,#1a2e0a,#2e4a1a)',tf2:'linear-gradient(135deg,#4a2a0a,#8b4a1a)'};return m[id]||'#0d1428';}
+
+function buildFeatures(feats){document.getElementById('featGrid').innerHTML=feats.map(f=>`<div class="feat-card"><div class="feat-icon ${f.style||'fi-c'}">${f.icon}</div><h3 class="feat-title">${f.title}</h3><p class="feat-desc">${f.desc}</p></div>`).join('');}
+
+function buildTestimonials(ts){document.getElementById('testiGrid').innerHTML=ts.map(t=>`<div class="testi-card"><div class="testi-stars">${'★'.repeat(t.stars||5)}</div><p class="testi-text">"${t.text}"</p><div class="testi-author"><div class="testi-av" style="background:${t.color||'var(--accent)'};">${t.av}</div><div><div class="testi-name">${t.name}</div><div class="testi-game">${t.game}</div></div></div></div>`).join('');}
+
+function buildFooterGames(games){document.getElementById('footerGames').innerHTML=games.filter(g=>g.visible!==false).map(g=>`<li><a href="#" onclick="scrollToGame('${g.id}');return false;">${g.name}</a></li>`).join('');}
+
+function scrollToGame(id){setFilter(id);document.getElementById('pricing').scrollIntoView({behavior:'smooth'});}
+
+function selectPlan(planId){
+  const plan=(D().plans||DEFAULTS.plans).find(p=>p.id===planId);if(!plan)return;
+  selectedPlan=plan;
+  document.getElementById('piIcon').textContent=plan.icon;
+  document.getElementById('piName').textContent=`${plan.gameName} — ${plan.name}`;
+  document.getElementById('piPrice').textContent=`$${plan.price}/mo`;
+  document.getElementById('orderFormWrap').style.display='block';
+  document.getElementById('orderSuccess').style.display='none';
+  openOvl('ovlOrder');
+}
+
+function submitOrder(){
+  const name=document.getElementById('oName').value.trim(),email=document.getElementById('oEmail').value.trim(),discord=document.getElementById('oDiscord').value.trim(),loc=document.getElementById('oLocation').value,terms=document.getElementById('oTerms').checked;
+  if(!name||!email||!discord||!loc)return toast('Missing Info','Please fill all required fields.',true);
+  if(!terms)return toast('Terms Required','Please accept the Terms of Service.',true);
+  const order={id:Date.now(),plan:selectedPlan,customer:{name,email,discord,phone:document.getElementById('oPhone').value,location:loc,billing:document.getElementById('oBilling').value,serverName:document.getElementById('oServerName').value,notes:document.getElementById('oNotes').value},status:'pending',timestamp:new Date().toISOString()};
+  const orders=JSON.parse(localStorage.getItem('nexushost_orders')||'[]');orders.unshift(order);localStorage.setItem('nexushost_orders',JSON.stringify(orders));
+  sendWebhook('order',order);
+  document.getElementById('orderFormWrap').style.display='none';document.getElementById('orderSuccess').style.display='block';
+}
+
+function submitTicket(){
+  const user=JSON.parse(localStorage.getItem('nexushost_user')||'null');if(!user){closeOvl('ovlTicket');openOvl('ovlLogin');return;}
+  const cat=document.getElementById('tkCat').value,subj=document.getElementById('tkSubj').value.trim(),msg=document.getElementById('tkMsg').value.trim(),prio=document.getElementById('tkPrio').value;
+  if(!cat||!subj||!msg)return toast('Missing Info','Please fill all required fields.',true);
+  const tk={id:'TKT-'+Date.now(),user:user.email,userName:user.name,discord:user.discord||'',category:cat,subject:subj,message:msg,priority:prio,status:'open',timestamp:new Date().toISOString(),replies:[]};
+  const tks=JSON.parse(localStorage.getItem('nexushost_tickets')||'[]');tks.unshift(tk);localStorage.setItem('nexushost_tickets',JSON.stringify(tks));
+  sendWebhook('ticket',tk);
+  document.getElementById('ticketFormWrap').style.display='none';document.getElementById('ticketSuccess').style.display='block';
+  setTimeout(()=>{closeOvl('ovlTicket');renderTickets();},2400);
+}
+
+function renderTickets(){
+  const user=JSON.parse(localStorage.getItem('nexushost_user')||'null');
+  if(!user){document.getElementById('tLoginPrompt').style.display='block';document.getElementById('tcWrap').classList.remove('on');return;}
+  document.getElementById('tLoginPrompt').style.display='none';document.getElementById('tcWrap').classList.add('on');
+  const tks=JSON.parse(localStorage.getItem('nexushost_tickets')||'[]').filter(t=>t.user===user.email);
+  document.getElementById('noTickets').style.display=tks.length===0?'block':'none';
+  document.getElementById('ticketList').innerHTML=tks.map(t=>`<div class="t-item"><div class="t-top"><span class="t-status ts-${t.status}">${t.status.toUpperCase()}</span><span class="t-subj">${t.subject}</span><span class="t-date">${new Date(t.timestamp).toLocaleDateString()}</span></div><div class="t-meta">${t.category} · ${t.priority} priority</div><div class="t-msg">${t.message.substring(0,140)}${t.message.length>140?'...':''}</div>${(t.replies||[]).map(r=>`<div class="t-reply"><div class="t-reply-from">Support Team — ${new Date(r.timestamp).toLocaleString()}</div><div class="t-reply-msg">${r.message}</div></div>`).join('')}</div>`).join('');
+}
+
+function sendWebhook(type,data){
+  const url=localStorage.getItem('nexushost_webhook');if(!url)return;
+  let embed;
+  if(type==='order'){embed={title:'🛒 New Order',color:0x00d4ff,fields:[{name:'Customer',value:data.customer.name,inline:true},{name:'Email',value:data.customer.email,inline:true},{name:'Discord',value:data.customer.discord,inline:true},{name:'Plan',value:`${data.plan.gameName} — ${data.plan.name}`,inline:true},{name:'Price',value:`$${data.plan.price}/mo`,inline:true},{name:'Billing',value:data.customer.billing,inline:true},{name:'Location',value:data.customer.location,inline:false},{name:'Notes',value:data.customer.notes||'None',inline:false}],timestamp:data.timestamp,footer:{text:'NexusHost'}};}
+  else{embed={title:'🎫 New Ticket',color:0x7b2fff,fields:[{name:'ID',value:data.id,inline:true},{name:'User',value:data.userName,inline:true},{name:'Discord',value:data.discord||'N/A',inline:true},{name:'Category',value:data.category,inline:true},{name:'Priority',value:data.priority,inline:true},{name:'Subject',value:data.subject,inline:false},{name:'Message',value:data.message.substring(0,300),inline:false}],timestamp:data.timestamp,footer:{text:'NexusHost Support'}};}
+  fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:'NexusHost',embeds:[embed]})}).catch(()=>{});
+}
+
+function doLogin(){
+  const email=document.getElementById('liEmail').value.trim(),pw=document.getElementById('liPass').value;
+  if(!email||!pw)return toast('Error','Please enter email and password.',true);
+  const users=JSON.parse(localStorage.getItem('nexushost_users')||'[]');
+  const u=users.find(x=>x.email===email&&x.password===pw);
+  if(!u)return toast('Login Failed','Invalid email or password.',true);
+  localStorage.setItem('nexushost_user',JSON.stringify(u));closeOvl('ovlLogin');updateAuthUI(u);toast('Welcome Back!',`Logged in as ${u.name}`);renderTickets();
+}
+function doRegister(){
+  const name=document.getElementById('rgName').value.trim(),discord=document.getElementById('rgDiscord').value.trim(),email=document.getElementById('rgEmail').value.trim(),pw=document.getElementById('rgPass').value;
+  if(!name||!email||!pw)return toast('Error','Please fill all required fields.',true);
+  const users=JSON.parse(localStorage.getItem('nexushost_users')||'[]');
+  if(users.find(u=>u.email===email))return toast('Error','Email already registered.',true);
+  const u={name,discord,email,password:pw,role:'user',created:new Date().toISOString()};
+  users.push(u);localStorage.setItem('nexushost_users',JSON.stringify(users));localStorage.setItem('nexushost_user',JSON.stringify(u));
+  closeOvl('ovlLogin');updateAuthUI(u);toast('Account Created!',`Welcome, ${name}!`);renderTickets();
+}
+function doLogout(){localStorage.removeItem('nexushost_user');updateAuthUI(null);renderTickets();toast('Logged Out','See you next time!');}
+function updateAuthUI(u){
+  const s=!!u;document.getElementById('uBar').classList.toggle('on',s);
+  document.getElementById('loginBtn').style.display=s?'none':'inline-block';
+  document.getElementById('ticketBtn').style.display=s?'inline-block':'none';
+  document.getElementById('navTickets').style.display=s?'inline':'none';
+  if(u){document.getElementById('uAv').textContent=u.name[0].toUpperCase();document.getElementById('uName').textContent=u.name.split(' ')[0];}
+}
+function switchAuthTab(t){
+  document.getElementById('tabLogin').classList.toggle('active',t==='login');document.getElementById('tabReg').classList.toggle('active',t==='reg');
+  document.getElementById('loginForm').style.display=t==='login'?'block':'none';document.getElementById('regForm').style.display=t==='reg'?'block':'none';
+}
+function openOvl(id){document.getElementById(id).classList.add('open');document.body.style.overflow='hidden';}
+function closeOvl(id){document.getElementById(id).classList.remove('open');document.body.style.overflow='';}
+function openTicket(){const u=JSON.parse(localStorage.getItem('nexushost_user')||'null');if(!u){openOvl('ovlLogin');return;}document.getElementById('ticketFormWrap').style.display='block';document.getElementById('ticketSuccess').style.display='none';openOvl('ovlTicket');}
+document.querySelectorAll('.ovl').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeOvl(o.id);}));
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.ovl.open').forEach(o=>o.classList.remove('open'));});
+function toast(title,msg,err=false){const t=document.getElementById('toast');document.getElementById('tTitle').textContent=title;document.getElementById('tMsg').textContent=msg;t.className='toast'+(err?' err':'');t.classList.add('on');setTimeout(()=>t.classList.remove('on'),3600);}
+function spawnParticles(){const c=document.getElementById('heroCanvas');for(let i=0;i<45;i++){const p=document.createElement('div');p.className='particle';const sz=Math.random()*3+1;p.style.cssText=`left:${Math.random()*100}%;width:${sz}px;height:${sz}px;background:${Math.random()>.5?'var(--accent)':'var(--accent2)'};animation-duration:${Math.random()*18+14}s;animation-delay:${Math.random()*-20}s;`;c.appendChild(p);}}
+function animateCounters(){document.querySelectorAll('.hs-num').forEach(el=>{const target=parseFloat(el.dataset.target);const isF=target%1!==0;let cur=0;const step=target/60;const t=setInterval(()=>{cur=Math.min(cur+step,target);el.textContent=isF?cur.toFixed(1):Math.floor(cur).toLocaleString();if(cur>=target)clearInterval(t);},16);});}
+
+window.addEventListener('load',()=>{
+  buildSite();spawnParticles();
+  const u=JSON.parse(localStorage.getItem('nexushost_user')||'null');
+  if(u){updateAuthUI(u);renderTickets();}else renderTickets();
+  new IntersectionObserver(entries=>{if(entries[0].isIntersecting)animateCounters();},{threshold:.2}).observe(document.querySelector('.hero-stats'));
+  window.addEventListener('storage',e=>{if(e.key===CFG_KEY)buildSite();});
+});
+</script>
+</body>
+</html>

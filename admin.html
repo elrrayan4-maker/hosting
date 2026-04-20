@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NexusHost — Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;600;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#030609;--bg2:#060b14;--bg3:#0a1020;--panel:#080f1e;--sidebar:#050c18;--border:#142030;--border2:#1e3050;--accent:#00d4ff;--accent2:#7b2fff;--accent3:#ff3c6e;--green:#00ff88;--yellow:#ffcc00;--orange:#ff8c00;--text:#c0d4f0;--text2:#507090;--glow:0 0 20px rgba(0,212,255,.25);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{font-family:'Exo 2',sans-serif;background:var(--bg);color:var(--text);display:flex;overflow:hidden;}
+::-webkit-scrollbar{width:4px;} ::-webkit-scrollbar-track{background:transparent;} ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+#loginScreen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:9999;}
+#loginScreen::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(0,212,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.02) 1px,transparent 1px);background-size:50px 50px;}
+.lbox{background:var(--panel);border:1px solid var(--border2);border-radius:16px;padding:3rem;width:100%;max-width:420px;position:relative;z-index:1;}
+.lbox::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:16px 16px 0 0;}
+.llogo{font-family:'Rajdhani',sans-serif;font-size:2rem;font-weight:700;letter-spacing:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-align:center;margin-bottom:.3rem;}
+.lsub{text-align:center;font-size:.72rem;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:var(--text2);margin-bottom:2.5rem;}
+.lerr{background:rgba(255,60,110,.1);border:1px solid rgba(255,60,110,.3);border-radius:6px;padding:.7rem 1rem;color:var(--accent3);font-size:.83rem;margin-bottom:1rem;display:none;}
+.sidebar{width:240px;min-width:240px;height:100vh;background:var(--sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
+.sb-logo{padding:1.4rem 1.5rem 1rem;border-bottom:1px solid var(--border);}
+.sb-logo .logo{font-family:'Rajdhani',sans-serif;font-size:1.5rem;font-weight:700;letter-spacing:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.sb-logo .logo em{font-style:normal;-webkit-text-fill-color:var(--accent3);}
+.sb-badge{display:inline-block;font-size:.58rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent3);border:1px solid rgba(255,60,110,.3);padding:2px 8px;border-radius:10px;margin-top:4px;background:rgba(255,60,110,.07);}
+.sb-nav{flex:1;overflow-y:auto;padding:.8rem 0;}
+.sbl{padding:.9rem 1.5rem .35rem;font-size:.58rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--text2);opacity:.55;}
+.ni{display:flex;align-items:center;gap:.75rem;padding:.65rem 1.5rem;cursor:pointer;color:var(--text2);font-size:.86rem;font-weight:600;letter-spacing:.5px;transition:all .2s;border-left:2px solid transparent;}
+.ni:hover{color:var(--text);background:rgba(0,212,255,.04);}
+.ni.active{color:var(--accent);background:rgba(0,212,255,.07);border-left-color:var(--accent);}
+.ni .ico{font-size:1rem;width:20px;text-align:center;}
+.nb{margin-left:auto;font-size:.62rem;font-weight:700;padding:2px 7px;border-radius:10px;min-width:18px;text-align:center;background:var(--accent3);color:#fff;}
+.nb.g{background:var(--green);color:#000;}
+.sb-foot{border-top:1px solid var(--border);padding:1rem 1.5rem;}
+.sb-user{display:flex;align-items:center;gap:.7rem;margin-bottom:.7rem;}
+.sb-av{width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,var(--accent2),var(--accent));display:flex;align-items:center;justify-content:center;font-size:.9rem;font-weight:700;color:#fff;flex-shrink:0;}
+.main{flex:1;height:100vh;overflow-y:auto;display:flex;flex-direction:column;}
+.topbar{position:sticky;top:0;background:rgba(3,6,9,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 2rem;height:58px;display:flex;align-items:center;justify-content:space-between;z-index:100;}
+.tb-title{font-family:'Rajdhani',sans-serif;font-size:1.15rem;font-weight:700;color:#fff;letter-spacing:1px;}
+.tb-right{display:flex;align-items:center;gap:1rem;}
+.status-pill{display:flex;align-items:center;gap:.45rem;font-size:.76rem;color:var(--green);}
+.sdot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.pc{padding:1.8rem 2rem;flex:1;}
+.page{display:none;}
+.page.active{display:block;}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:1.1rem;margin-bottom:1.8rem;}
+.sc{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:1.4rem;position:relative;overflow:hidden;transition:border-color .3s;}
+.sc:hover{border-color:var(--border2);}
+.sc::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;}
+.sc-c::after{background:linear-gradient(90deg,var(--accent),transparent);}
+.sc-p::after{background:linear-gradient(90deg,var(--accent2),transparent);}
+.sc-g::after{background:linear-gradient(90deg,var(--green),transparent);}
+.sc-r::after{background:linear-gradient(90deg,var(--accent3),transparent);}
+.sc-y::after{background:linear-gradient(90deg,var(--yellow),transparent);}
+.sc-lbl{font-size:.67rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text2);margin-bottom:.7rem;}
+.sc-num{font-family:'Rajdhani',sans-serif;font-size:2.1rem;font-weight:700;color:#fff;line-height:1;margin-bottom:.25rem;}
+.sc-sub{font-size:.72rem;color:var(--text2);}
+.sc-ico{position:absolute;top:1.1rem;right:1.1rem;font-size:1.7rem;opacity:.18;}
+.tw{background:var(--panel);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:1.8rem;}
+.th2{padding:1.1rem 1.4rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.8rem;}
+.tt{font-family:'Rajdhani',sans-serif;font-size:1.05rem;font-weight:700;color:#fff;letter-spacing:1px;}
+table{width:100%;border-collapse:collapse;}
+thead tr{background:rgba(0,0,0,.3);}
+th{padding:.7rem 1rem;text-align:left;font-size:.65rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text2);border-bottom:1px solid var(--border);white-space:nowrap;}
+td{padding:.85rem 1rem;font-size:.86rem;color:var(--text);border-bottom:1px solid rgba(20,32,48,.5);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(0,212,255,.02);}
+.badge{padding:2px 9px;border-radius:20px;font-size:.65rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;}
+.b-pending{background:rgba(255,204,0,.1);color:var(--yellow);border:1px solid rgba(255,204,0,.3);}
+.b-active{background:rgba(0,255,136,.1);color:var(--green);border:1px solid rgba(0,255,136,.3);}
+.b-open{background:rgba(0,212,255,.1);color:var(--accent);border:1px solid rgba(0,212,255,.3);}
+.b-closed{background:rgba(80,112,144,.1);color:var(--text2);border:1px solid var(--border2);}
+.b-cancelled{background:rgba(255,60,110,.1);color:var(--accent3);border:1px solid rgba(255,60,110,.3);}
+.b-high{background:rgba(255,140,0,.1);color:var(--orange);border:1px solid rgba(255,140,0,.3);}
+.b-critical{background:rgba(255,60,110,.15);color:var(--accent3);border:1px solid rgba(255,60,110,.4);}
+.bi{width:28px;height:28px;border-radius:5px;border:1px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;font-size:.82rem;display:inline-flex;align-items:center;justify-content:center;transition:all .2s;margin-right:3px;}
+.bi:hover{border-color:var(--accent);color:var(--accent);}
+.bi.d:hover{border-color:var(--accent3);color:var(--accent3);}
+.bi.s:hover{border-color:var(--green);color:var(--green);}
+.es{text-align:center;padding:2.5rem;color:var(--text2);font-size:.87rem;}
+.es .ei{font-size:2.2rem;margin-bottom:.4rem;opacity:.35;}
+.fg{margin-bottom:1rem;}
+.fl{display:block;font-size:.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text2);margin-bottom:.4rem;}
+.fi{width:100%;padding:9px 12px;background:var(--bg3);border:1px solid var(--border2);border-radius:7px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:.87rem;outline:none;transition:border-color .2s,box-shadow .2s;}
+.fi:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,212,255,.1);}
+.fi::placeholder{color:var(--text2);opacity:.4;}
+select.fi{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='%23507090' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;cursor:pointer;}
+select.fi option{background:var(--bg3);}
+textarea.fi{resize:vertical;}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.fr3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;}
+.fr4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:1rem;}
+.si-input{width:100%;padding:6px 12px;background:var(--bg3);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:.83rem;outline:none;}
+.si-input:focus{border-color:var(--accent);}
+.btn-save{padding:9px 22px;background:linear-gradient(135deg,var(--accent2),var(--accent));border:none;border-radius:7px;color:#fff;font-family:'Rajdhani',sans-serif;font-size:.92rem;font-weight:700;letter-spacing:1px;cursor:pointer;transition:all .2s;}
+.btn-save:hover{box-shadow:0 6px 20px rgba(123,47,255,.4);transform:translateY(-1px);}
+.btn-outline2{padding:9px 22px;background:transparent;border:1px solid var(--accent);border-radius:7px;color:var(--accent);font-family:'Rajdhani',sans-serif;font-size:.92rem;font-weight:700;letter-spacing:1px;cursor:pointer;transition:all .2s;}
+.btn-outline2:hover{background:rgba(0,212,255,.08);box-shadow:var(--glow);}
+.btn-danger{padding:9px 18px;border:1px solid rgba(255,60,110,.4);background:rgba(255,60,110,.05);color:var(--accent3);border-radius:6px;cursor:pointer;font-family:'Rajdhani',sans-serif;font-weight:600;font-size:.87rem;letter-spacing:1px;transition:all .2s;}
+.btn-danger:hover{background:rgba(255,60,110,.15);}
+.btn-sm{padding:6px 14px;font-size:.8rem;}
+.btn-logout-s{width:100%;padding:7px;background:transparent;border:1px solid var(--border2);border-radius:6px;color:var(--text2);font-family:'Rajdhani',sans-serif;font-size:.83rem;font-weight:600;letter-spacing:1px;cursor:pointer;transition:all .2s;}
+.btn-logout-s:hover{border-color:var(--accent3);color:var(--accent3);}
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;}
+.sg-full{grid-column:1/-1;}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:1.6rem;}
+.card h3{font-family:'Rajdhani',sans-serif;font-size:1.05rem;font-weight:700;color:#fff;letter-spacing:1px;margin-bottom:.4rem;}
+.card .cdesc{font-size:.8rem;color:var(--text2);margin-bottom:1.3rem;line-height:1.6;}
+.plan-editor-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.3rem;}
+.pe-card{background:var(--panel);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .3s;}
+.pe-card:hover{border-color:var(--border2);}
+.pe-card.featured-card{border-color:rgba(0,212,255,.4);}
+.pe-img{position:relative;height:110px;background:var(--bg3);overflow:hidden;cursor:pointer;flex-shrink:0;}
+.pe-img img{width:100%;height:100%;object-fit:cover;display:block;}
+.pe-img-ph{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.3rem;color:var(--text2);font-size:.75rem;}
+.pe-img-ph .ei2{font-size:2rem;opacity:.4;}
+.pe-img-hover{position:absolute;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;font-family:'Rajdhani',sans-serif;font-size:.85rem;font-weight:700;letter-spacing:1px;color:var(--accent);}
+.pe-img:hover .pe-img-hover{opacity:1;}
+.pe-body{padding:1.1rem;}
+.pe-game{font-size:.65rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:.2rem;}
+.pe-title{font-family:'Rajdhani',sans-serif;font-size:1.1rem;font-weight:700;color:#fff;margin-bottom:.8rem;}
+.pe-fields{display:flex;flex-direction:column;gap:.6rem;}
+.pe-row{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;}
+.pe-actions{padding:.8rem 1.1rem;border-top:1px solid var(--border);display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;}
+.tag-input-wrap{display:flex;flex-wrap:wrap;gap:.35rem;padding:.5rem;background:var(--bg3);border:1px solid var(--border2);border-radius:6px;min-height:38px;align-items:center;cursor:text;}
+.tag-chip{display:flex;align-items:center;gap:.3rem;background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.2);color:var(--accent);font-size:.7rem;font-weight:600;padding:2px 8px;border-radius:12px;}
+.tag-chip .tx{cursor:pointer;color:var(--accent3);font-size:.8rem;line-height:1;}
+.tag-chip .tx:hover{color:#fff;}
+.toggle-wrap{display:flex;align-items:center;gap:.6rem;}
+.toggle{position:relative;width:36px;height:20px;flex-shrink:0;}
+.toggle input{opacity:0;width:0;height:0;}
+.toggle-slider{position:absolute;inset:0;background:var(--border2);border-radius:20px;cursor:pointer;transition:.3s;}
+.toggle-slider::before{content:'';position:absolute;width:14px;height:14px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s;}
+.toggle input:checked + .toggle-slider{background:var(--accent);}
+.toggle input:checked + .toggle-slider::before{transform:translateX(16px);}
+.toggle-lbl{font-size:.78rem;color:var(--text2);cursor:pointer;}
+.ge-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.2rem;}
+.ge-card{background:var(--panel);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.ge-img{height:100px;position:relative;cursor:pointer;overflow:hidden;}
+.ge-img-bg{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2.5rem;background-size:cover;background-position:center;}
+.ge-img-hover{position:absolute;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;font-family:'Rajdhani',sans-serif;font-size:.82rem;font-weight:700;letter-spacing:1px;color:var(--accent);}
+.ge-img:hover .ge-img-hover{opacity:1;}
+.ge-body{padding:1rem;}
+.movl{position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(12px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s;}
+.movl.open{opacity:1;pointer-events:all;}
+.mbox{background:var(--bg3);border:1px solid var(--border2);border-radius:16px;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;transform:scale(.9);transition:transform .3s;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;}
+.movl.open .mbox{transform:scale(1);}
+.mbox-lg{max-width:720px;}
+.mhd{padding:1.3rem 1.8rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.mhd h3{font-family:'Rajdhani',sans-serif;font-size:1.25rem;font-weight:700;color:#fff;}
+.mcls{width:28px;height:28px;border-radius:5px;border:1px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.mcls:hover{border-color:var(--accent3);color:var(--accent3);}
+.mbody{padding:1.3rem 1.8rem 1.8rem;}
+.thread-bubble{padding:.85rem 1rem;border-radius:8px;margin-bottom:.7rem;font-size:.84rem;line-height:1.65;}
+.tb-user{background:rgba(123,47,255,.07);border:1px solid rgba(123,47,255,.18);}
+.tb-admin{background:rgba(0,212,255,.05);border:1px solid rgba(0,212,255,.18);border-left:3px solid var(--accent);}
+.tb-from{font-size:.68rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;}
+.tb-from.admin{color:var(--accent);}
+.tb-from.user{color:var(--accent2);}
+.tb-time{float:right;font-size:.68rem;color:var(--text2);}
+.wh-status{display:flex;align-items:center;gap:.5rem;font-size:.78rem;margin-top:.8rem;}
+.wh-log{font-family:'Share Tech Mono',monospace;font-size:.72rem;color:var(--text2);line-height:2;max-height:180px;overflow-y:auto;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:.6rem .8rem;margin-top:.7rem;white-space:pre;}
+.photo-zone{position:relative;border:2px dashed var(--border2);border-radius:8px;overflow:hidden;cursor:pointer;transition:border-color .2s;}
+.photo-zone:hover{border-color:var(--accent);}
+.photo-zone img{width:100%;height:100%;object-fit:cover;display:block;}
+.photo-zone-ph{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4rem;color:var(--text2);font-size:.78rem;padding:1.2rem;}
+.photo-zone-ph .icon{font-size:1.8rem;opacity:.4;}
+.photo-zone-overlay{position:absolute;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;font-family:'Rajdhani',sans-serif;font-size:.82rem;font-weight:700;letter-spacing:1px;color:var(--accent);}
+.photo-zone:hover .photo-zone-overlay{opacity:1;}
+input[type=file]{display:none;}
+.toast{position:fixed;bottom:22px;right:22px;background:var(--bg3);border:1px solid var(--green);border-radius:10px;padding:.85rem 1.3rem;z-index:2000;transform:translateY(80px);opacity:0;transition:all .4s cubic-bezier(.34,1.56,.64,1);max-width:280px;}
+.toast.on{transform:translateY(0);opacity:1;}
+.toast.err{border-color:var(--accent3);}
+.t-ttl{font-family:'Rajdhani',sans-serif;font-size:.92rem;font-weight:700;color:var(--green);margin-bottom:2px;}
+.toast.err .t-ttl{color:var(--accent3);}
+.t-msg{font-size:.8rem;color:var(--text2);}
+.mini-bar-wrap{display:flex;align-items:flex-end;gap:6px;height:70px;margin-bottom:4px;}
+.mb-bar{flex:1;background:linear-gradient(to top,var(--accent2),var(--accent));border-radius:3px 3px 0 0;opacity:.7;transition:opacity .2s;cursor:default;}
+.mb-bar:hover{opacity:1;}
+.mb-labels{display:flex;gap:6px;}
+.mb-lbl{flex:1;text-align:center;font-size:.6rem;color:var(--text2);}
+.chart-row{display:grid;grid-template-columns:2fr 1fr;gap:1.4rem;margin-bottom:1.8rem;}
+@media(max-width:900px){
+  .sidebar{width:52px;min-width:52px;}
+  .sb-logo .logo,.sbl,.ni>span:not(.ico),.sb-foot .sb-user>div,.sb-foot .btn-logout-s{display:none;}
+  .ni{justify-content:center;padding:.75rem;}
+  .sg{grid-template-columns:1fr;}
+  .chart-row{grid-template-columns:1fr;}
+  .fr{grid-template-columns:1fr;}
+  .fr3,.fr4{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<div id="loginScreen">
+  <div class="lbox">
+    <div class="llogo">NEXUSHOST</div>
+    <div class="lsub">Admin Panel</div>
+    <div class="lerr" id="lerr">Invalid credentials. Please try again.</div>
+    <div class="fg"><label class="fl">Username</label><input type="text" class="fi" id="aUser" placeholder="admin" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <div class="fg"><label class="fl">Password</label><input type="password" class="fi" id="aPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <button class="btn-save" style="width:100%;margin-top:.5rem;" onclick="doLogin()">ACCESS ADMIN PANEL</button>
+    <p style="text-align:center;margin-top:1rem;font-size:.73rem;color:var(--text2);">Default: <code style="color:var(--accent);">admin / nexushost2025</code> &nbsp;·&nbsp; <a href="index.html" style="color:var(--accent);text-decoration:none;">&#8592; Back to Site</a></p>
+  </div>
+</div>
+
+<div id="adminApp" style="display:none;width:100%;flex-direction:row;">
+<div class="sidebar">
+  <div class="sb-logo"><div class="logo">NEXUS<em>HOST</em></div><div class="sb-badge">ADMIN</div></div>
+  <nav class="sb-nav">
+    <div class="sbl">Overview</div>
+    <div class="ni active" onclick="showPage('dashboard',this)"><span class="ico">📊</span><span>Dashboard</span></div>
+    <div class="sbl">Management</div>
+    <div class="ni" onclick="showPage('orders',this)"><span class="ico">🛒</span><span>Orders</span><span class="nb" id="oBadge" style="display:none">0</span></div>
+    <div class="ni" onclick="showPage('tickets',this)"><span class="ico">🎫</span><span>Tickets</span><span class="nb" id="tBadge" style="display:none">0</span></div>
+    <div class="ni" onclick="showPage('users',this)"><span class="ico">👥</span><span>Users</span></div>
+    <div class="sbl">Customize</div>
+    <div class="ni" onclick="showPage('plans',this)"><span class="ico">💎</span><span>Plans Editor</span></div>
+    <div class="ni" onclick="showPage('games',this)"><span class="ico">🎮</span><span>Games Manager</span></div>
+    <div class="ni" onclick="showPage('content',this)"><span class="ico">✏️</span><span>Site Content</span></div>
+    <div class="ni" onclick="showPage('features',this)"><span class="ico">⚡</span><span>Features</span></div>
+    <div class="ni" onclick="showPage('testimonials',this)"><span class="ico">💬</span><span>Testimonials</span></div>
+    <div class="sbl">Config</div>
+    <div class="ni" onclick="showPage('webhook',this)"><span class="ico">🔗</span><span>Webhook</span></div>
+    <div class="ni" onclick="showPage('settings',this)"><span class="ico">⚙️</span><span>Settings</span></div>
+    <div class="sbl">Links</div>
+    <div class="ni" onclick="window.open('index.html','_blank')"><span class="ico">🌐</span><span>View Live Site</span></div>
+  </nav>
+  <div class="sb-foot">
+    <div class="sb-user"><div class="sb-av" id="sbAv">A</div><div><div style="font-weight:700;font-size:.88rem;color:var(--text)" id="sbName">Admin</div><div style="font-size:.68rem;color:var(--accent);text-transform:uppercase;letter-spacing:1px;">Super Admin</div></div></div>
+    <button class="btn-logout-s" onclick="doAdminLogout()">LOGOUT</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="topbar">
+    <div class="tb-title" id="tbTitle">Dashboard</div>
+    <div class="tb-right">
+      <div class="status-pill"><div class="sdot"></div><span>All Systems Online</span></div>
+      <span style="font-size:.76rem;color:var(--text2);font-family:'Share Tech Mono',monospace;" id="clock"></span>
+    </div>
+  </div>
+  <div class="pc">
+
+  <div class="page active" id="page-dashboard">
+    <div class="stats-row">
+      <div class="sc sc-c"><div class="sc-lbl">Total Orders</div><div class="sc-num" id="st-orders">0</div><div class="sc-sub">All time</div><div class="sc-ico">🛒</div></div>
+      <div class="sc sc-g"><div class="sc-lbl">Active Servers</div><div class="sc-num" id="st-active">0</div><div class="sc-sub">Running now</div><div class="sc-ico">🟢</div></div>
+      <div class="sc sc-p"><div class="sc-lbl">Open Tickets</div><div class="sc-num" id="st-tickets">0</div><div class="sc-sub">Need reply</div><div class="sc-ico">🎫</div></div>
+      <div class="sc sc-y"><div class="sc-lbl">Users</div><div class="sc-num" id="st-users">0</div><div class="sc-sub">Registered</div><div class="sc-ico">👥</div></div>
+      <div class="sc sc-r"><div class="sc-lbl">MRR (Est.)</div><div class="sc-num" id="st-mrr">$0</div><div class="sc-sub">Monthly recurring</div><div class="sc-ico">💰</div></div>
+    </div>
+    <div class="chart-row">
+      <div class="card"><h3>📈 Orders This Week</h3><div class="mini-bar-wrap" id="weekBars"></div><div class="mb-labels" id="weekLabels"></div></div>
+      <div class="card"><h3>🎮 Top Games</h3><div id="topGames" style="margin-top:.5rem;"></div></div>
+    </div>
+    <div class="tw">
+      <div class="th2"><span class="tt">Recent Orders</span><a onclick="showPage('orders',document.querySelector('[onclick*=orders]'))" style="cursor:pointer;color:var(--accent);font-size:.78rem;font-weight:600;text-decoration:none;">View All →</a></div>
+      <table><thead><tr><th>Customer</th><th>Plan</th><th>Price</th><th>Status</th><th>Date</th></tr></thead><tbody id="recentOTbody"></tbody></table>
+    </div>
+  </div>
+
+  <div class="page" id="page-orders">
+    <div class="tw">
+      <div class="th2"><span class="tt">All Orders</span><input type="text" class="si-input" style="width:200px;" placeholder="🔍 Search..." oninput="filterOrders(this.value)"></div>
+      <table><thead><tr><th>ID</th><th>Customer</th><th>Discord</th><th>Plan</th><th>Price</th><th>Location</th><th>Billing</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody id="oTbody"></tbody></table>
+      <div class="es" id="oEmpty" style="display:none"><div class="ei">📭</div><p>No orders yet.</p></div>
+    </div>
+  </div>
+
+  <div class="page" id="page-tickets">
+    <div class="tw">
+      <div class="th2"><span class="tt">Support Tickets</span>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+          <select class="si-input" style="width:130px;" id="tkFilterStatus" onchange="renderTicketsTable()"><option value="all">All Status</option><option value="open">Open</option><option value="pending">Pending</option><option value="closed">Closed</option></select>
+          <input type="text" class="si-input" style="width:180px;" placeholder="🔍 Search..." oninput="filterTickets(this.value)">
+        </div>
+      </div>
+      <table><thead><tr><th>Ticket ID</th><th>User</th><th>Discord</th><th>Category</th><th>Subject</th><th>Priority</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody id="tkTbody"></tbody></table>
+      <div class="es" id="tkEmpty" style="display:none"><div class="ei">📬</div><p>No tickets yet.</p></div>
+    </div>
+  </div>
+
+  <div class="page" id="page-users">
+    <div style="margin-bottom:1.2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+      <span style="font-family:'Rajdhani',sans-serif;font-size:1.05rem;font-weight:700;color:#fff;">Registered Users</span>
+      <input type="text" class="si-input" style="width:200px;" placeholder="🔍 Search..." oninput="filterUsers(this.value)">
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;" id="usersGrid"></div>
+    <div class="es" id="usersEmpty" style="display:none;margin-top:2rem;"><div class="ei">👤</div><p>No registered users yet.</p></div>
+  </div>
+
+  <div class="page" id="page-plans">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.4rem;flex-wrap:wrap;gap:1rem;">
+      <div><h2 style="font-family:'Rajdhani',sans-serif;font-size:1.4rem;font-weight:700;color:#fff;">Plans Editor</h2><p style="font-size:.82rem;color:var(--text2);margin-top:.2rem;">Edit plans, upload images, set specs. Changes publish live instantly.</p></div>
+      <div style="display:flex;gap:.6rem;flex-wrap:wrap;">
+        <select class="si-input" style="width:160px;" id="planFilterGame" onchange="renderPlansEditor()"><option value="all">All Games</option></select>
+        <button class="btn-save btn-sm" onclick="openAddPlanModal()">+ ADD PLAN</button>
+        <button class="btn-outline2 btn-sm" onclick="publishAll()">🚀 PUBLISH ALL</button>
+      </div>
+    </div>
+    <div class="plan-editor-grid" id="plansEditorGrid"></div>
+    <input type="file" id="planPhotoInput" accept="image/*">
+  </div>
+
+  <div class="page" id="page-games">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.4rem;flex-wrap:wrap;gap:1rem;">
+      <div><h2 style="font-family:'Rajdhani',sans-serif;font-size:1.4rem;font-weight:700;color:#fff;">Games Manager</h2><p style="font-size:.82rem;color:var(--text2);margin-top:.2rem;">Manage game cards, images, tags, and visibility.</p></div>
+      <button class="btn-save btn-sm" onclick="openAddGameModal()">+ ADD GAME</button>
+    </div>
+    <div class="ge-grid" id="gamesEditorGrid"></div>
+    <input type="file" id="gamePhotoInput" accept="image/*">
+  </div>
+
+  <div class="page" id="page-content">
+    <div class="sg">
+      <div class="card sg-full"><h3>🌐 Site Identity</h3><p class="cdesc">Core branding shown across the entire site. Changes apply instantly.</p>
+        <div class="fr4">
+          <div class="fg"><label class="fl">Site Name</label><input type="text" class="fi" id="cSiteName" placeholder="NexusHost" oninput="updatePreview()"></div>
+          <div class="fg"><label class="fl">Tagline</label><input type="text" class="fi" id="cTagline" placeholder="Premium Hosting"></div>
+          <div class="fg"><label class="fl">Logo Text</label><input type="text" class="fi" id="cLogo" placeholder="NEXUSHOST"></div>
+          <div class="fg"><label class="fl">Copyright</label><input type="text" class="fi" id="cCopy" placeholder="© 2025 NexusHost."></div>
+        </div>
+        <div class="fr">
+          <div class="fg"><label class="fl">Footer Description</label><textarea class="fi" id="cDesc" rows="2"></textarea></div>
+          <div class="fg"><label class="fl">Discord Invite Link</label><input type="url" class="fi" id="cDiscord" placeholder="https://discord.gg/..."></div>
+        </div>
+        <button class="btn-save" onclick="saveSiteContent()">SAVE SITE IDENTITY</button>
+      </div>
+      <div class="card"><h3>🦸 Hero Section</h3><p class="cdesc">Main hero banner text and taglines.</p>
+        <div class="fg"><label class="fl">Badge Text</label><input type="text" class="fi" id="hBadge" placeholder="⚡ PREMIUM GAME SERVER HOSTING"></div>
+        <div class="fg"><label class="fl">Headline Line 1</label><input type="text" class="fi" id="hLine1" placeholder="DOMINATE YOUR" oninput="updatePreview()"></div>
+        <div class="fg"><label class="fl">Headline Line 2</label><input type="text" class="fi" id="hLine2" placeholder="GAME WORLD" oninput="updatePreview()"></div>
+        <div class="fg"><label class="fl">Sub-Headline</label><textarea class="fi" id="hSub" rows="3"></textarea></div>
+        <button class="btn-save" onclick="saveHeroContent()">SAVE HERO</button>
+      </div>
+      <div class="card"><h3>🔴 Live Preview</h3><p class="cdesc">Real-time preview of your changes.</p>
+        <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:1rem;margin-bottom:1rem;">
+          <div style="font-size:.65rem;color:var(--text2);margin-bottom:.3rem;">SITE NAME</div>
+          <div style="font-family:'Rajdhani',sans-serif;font-size:1.3rem;font-weight:700;color:var(--accent);" id="prevSiteName">NexusHost</div>
+          <div style="font-size:.65rem;color:var(--text2);margin-top:.7rem;margin-bottom:.3rem;">HERO HEADLINE</div>
+          <div style="font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;color:#fff;" id="prevHero">DOMINATE YOUR GAME WORLD</div>
+        </div>
+        <button class="btn-outline2" onclick="window.open('index.html','_blank')">🌐 OPEN LIVE SITE</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="page" id="page-features">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.4rem;flex-wrap:wrap;gap:1rem;">
+      <div><h2 style="font-family:'Rajdhani',sans-serif;font-size:1.4rem;font-weight:700;color:#fff;">Features Editor</h2><p style="font-size:.82rem;color:var(--text2);">Edit the feature cards shown on the site.</p></div>
+      <button class="btn-save btn-sm" onclick="addFeature()">+ ADD FEATURE</button>
+    </div>
+    <div id="featuresEditor"></div>
+    <button class="btn-save" style="margin-top:1rem;" onclick="saveFeatures()">SAVE FEATURES</button>
+  </div>
+
+  <div class="page" id="page-testimonials">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.4rem;flex-wrap:wrap;gap:1rem;">
+      <div><h2 style="font-family:'Rajdhani',sans-serif;font-size:1.4rem;font-weight:700;color:#fff;">Testimonials Editor</h2><p style="font-size:.82rem;color:var(--text2);">Edit customer reviews shown on the site.</p></div>
+      <button class="btn-save btn-sm" onclick="addTestimonial()">+ ADD REVIEW</button>
+    </div>
+    <div id="testiEditor"></div>
+    <button class="btn-save" style="margin-top:1rem;" onclick="saveTestimonials()">SAVE TESTIMONIALS</button>
+  </div>
+
+  <div class="page" id="page-webhook">
+    <div class="sg">
+      <div class="card sg-full"><h3>🔗 Discord Webhook</h3><p class="cdesc">Receive real-time Discord notifications for orders, tickets, and replies.</p>
+        <div class="fr">
+          <div class="fg"><label class="fl">Webhook URL</label><input type="url" class="fi" id="whUrl" placeholder="https://discord.com/api/webhooks/..."></div>
+          <div class="fg"><label class="fl">Bot Display Name</label><input type="text" class="fi" id="whName" placeholder="NexusHost Bot"></div>
+        </div>
+        <div style="display:flex;gap:.6rem;flex-wrap:wrap;">
+          <button class="btn-save" onclick="saveWebhook()">SAVE WEBHOOK</button>
+          <button class="btn-outline2" onclick="testWebhook()">🧪 SEND TEST</button>
+        </div>
+        <div class="wh-status" id="whStatus"></div>
+      </div>
+      <div class="card"><h3>📬 Notification Events</h3><p class="cdesc">Choose which events fire webhook notifications.</p>
+        <div style="display:flex;flex-direction:column;gap:.8rem;margin-top:.5rem;">
+          <label style="display:flex;align-items:center;gap:.7rem;cursor:pointer;font-size:.86rem;"><input type="checkbox" id="wn-order" checked style="accent-color:var(--accent);width:15px;height:15px;">🛒 New Order Placed</label>
+          <label style="display:flex;align-items:center;gap:.7rem;cursor:pointer;font-size:.86rem;"><input type="checkbox" id="wn-ticket" checked style="accent-color:var(--accent);width:15px;height:15px;">🎫 New Support Ticket</label>
+          <label style="display:flex;align-items:center;gap:.7rem;cursor:pointer;font-size:.86rem;"><input type="checkbox" id="wn-register" checked style="accent-color:var(--accent);width:15px;height:15px;">👤 New User Registration</label>
+          <label style="display:flex;align-items:center;gap:.7rem;cursor:pointer;font-size:.86rem;"><input type="checkbox" id="wn-reply" checked style="accent-color:var(--accent);width:15px;height:15px;">💬 Admin Ticket Reply</label>
+          <label style="display:flex;align-items:center;gap:.7rem;cursor:pointer;font-size:.86rem;"><input type="checkbox" id="wn-status" style="accent-color:var(--accent);width:15px;height:15px;">🔄 Order Status Change</label>
+        </div>
+        <button class="btn-save" style="margin-top:1rem;" onclick="toast('Saved','Notification preferences updated.')">SAVE PREFS</button>
+      </div>
+      <div class="card"><h3>📋 Dispatch Log</h3><p class="cdesc">Recent webhook activity log.</p><div class="wh-log" id="whLog">No dispatches yet.</div></div>
+    </div>
+  </div>
+
+  <div class="page" id="page-settings">
+    <div class="sg">
+      <div class="card"><h3>🔐 Change Password</h3><p class="cdesc">Update your admin login credentials.</p>
+        <div class="fg"><label class="fl">Current Password</label><input type="password" class="fi" id="sCurrPass" placeholder="••••••••"></div>
+        <div class="fg"><label class="fl">New Password</label><input type="password" class="fi" id="sNewPass" placeholder="••••••••"></div>
+        <div class="fg"><label class="fl">Confirm New Password</label><input type="password" class="fi" id="sConfPass" placeholder="••••••••"></div>
+        <button class="btn-save" onclick="changePass()">UPDATE PASSWORD</button>
+      </div>
+      <div class="card"><h3>💾 Data Management</h3><p class="cdesc">Export or reset platform data.</p>
+        <div style="display:flex;flex-direction:column;gap:.7rem;">
+          <button class="btn-outline2" onclick="exportData()">📥 EXPORT ALL DATA (JSON)</button>
+          <button class="btn-outline2" onclick="resetConfig()">🔄 RESET CONFIG TO DEFAULTS</button>
+        </div>
+        <div style="margin-top:1.5rem;padding-top:1.2rem;border-top:1px solid var(--border);">
+          <div style="font-size:.72rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent3);margin-bottom:.8rem;">⚠️ Danger Zone</div>
+          <div style="display:flex;flex-direction:column;gap:.5rem;">
+            <button class="btn-danger" onclick="clearData('orders')">CLEAR ALL ORDERS</button>
+            <button class="btn-danger" onclick="clearData('tickets')">CLEAR ALL TICKETS</button>
+            <button class="btn-danger" onclick="clearData('users')">CLEAR ALL USERS</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </div>
+</div>
+</div>
+
+<!-- REPLY MODAL -->
+<div class="movl" id="replyModal">
+  <div class="mbox">
+    <div class="mhd"><h3>🎫 Reply to Ticket</h3><button class="mcls" onclick="closeModal('replyModal')">&#x2715;</button></div>
+    <div class="mbody">
+      <div id="tkDetailBox" style="background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:1rem;margin-bottom:1.2rem;"></div>
+      <div id="tkThread" style="margin-bottom:1.2rem;"></div>
+      <div style="display:flex;align-items:center;gap:.8rem;margin-bottom:1rem;flex-wrap:wrap;">
+        <label style="font-size:.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text2);">Status:</label>
+        <select class="si-input" style="width:130px;" id="replyStatus"><option value="open">Open</option><option value="pending">Pending</option><option value="closed">Closed</option></select>
+      </div>
+      <div class="fg"><label class="fl">Your Reply</label><textarea class="fi" id="replyText" rows="4" placeholder="Type your reply to the user..."></textarea></div>
+      <button class="btn-save" onclick="sendReply()">📨 SEND REPLY</button>
+    </div>
+  </div>
+</div>
+
+<!-- ORDER DETAIL MODAL -->
+<div class="movl" id="orderModal">
+  <div class="mbox"><div class="mhd"><h3>🛒 Order Details</h3><button class="mcls" onclick="closeModal('orderModal')">&#x2715;</button></div><div class="mbody" id="orderDetailBody"></div></div>
+</div>
+
+<!-- ADD PLAN MODAL -->
+<div class="movl" id="addPlanModal">
+  <div class="mbox mbox-lg">
+    <div class="mhd"><h3 id="addPlanTitle">➕ Add New Plan</h3><button class="mcls" onclick="closeModal('addPlanModal')">&#x2715;</button></div>
+    <div class="mbody">
+      <div class="fr"><div class="fg"><label class="fl">Game ID *</label><input type="text" class="fi" id="np-game" placeholder="minecraft, rust, gta..."></div><div class="fg"><label class="fl">Game Display Name *</label><input type="text" class="fi" id="np-gameName" placeholder="Minecraft"></div></div>
+      <div class="fr"><div class="fg"><label class="fl">Plan Name *</label><input type="text" class="fi" id="np-name" placeholder="Pro, Elite..."></div><div class="fg"><label class="fl">Icon (emoji)</label><input type="text" class="fi" id="np-icon" placeholder="🟩"></div></div>
+      <div class="fr3"><div class="fg"><label class="fl">Price ($/mo) *</label><input type="number" class="fi" id="np-price" placeholder="9.99" step="0.01"></div><div class="fg"><label class="fl">RAM</label><input type="text" class="fi" id="np-ram" placeholder="4GB"></div><div class="fg"><label class="fl">CPU</label><input type="text" class="fi" id="np-cpu" placeholder="4 vCPU"></div></div>
+      <div class="fr3"><div class="fg"><label class="fl">Storage</label><input type="text" class="fi" id="np-storage" placeholder="40GB SSD"></div><div class="fg"><label class="fl">Max Players</label><input type="number" class="fi" id="np-players" placeholder="30"></div><div class="fg"><label class="fl">Bandwidth</label><input type="text" class="fi" id="np-bandwidth" placeholder="1Gbps"></div></div>
+      <div class="fr"><div class="fg"><label class="fl">Backups</label><input type="text" class="fi" id="np-backups" placeholder="Daily"></div><div class="fg"><label class="fl">Support Level</label><input type="text" class="fi" id="np-support" placeholder="Priority 24/7"></div></div>
+      <div class="fr"><div class="fg"><label class="fl">Ribbon Label</label><input type="text" class="fi" id="np-ribbon" placeholder="BEST VALUE (optional)"></div><div class="fg"><label class="fl">Description</label><input type="text" class="fi" id="np-desc" placeholder="Short plan description"></div></div>
+      <div class="fg"><label class="fl">Extras (comma separated)</label><input type="text" class="fi" id="np-extras" placeholder="Forge/Fabric, Custom Domain, MySQL"></div>
+      <div style="display:flex;gap:1.5rem;margin-top:.5rem;flex-wrap:wrap;">
+        <label class="toggle-wrap"><span class="toggle"><input type="checkbox" id="np-featured"><span class="toggle-slider"></span></span><span class="toggle-lbl">Mark as Featured</span></label>
+        <label class="toggle-wrap"><span class="toggle"><input type="checkbox" id="np-ddos" checked><span class="toggle-slider"></span></span><span class="toggle-lbl">DDoS Protection</span></label>
+      </div>
+      <input type="hidden" id="np-editId">
+      <button class="btn-save" style="margin-top:1.2rem;" onclick="savePlan()">SAVE PLAN</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD GAME MODAL -->
+<div class="movl" id="addGameModal">
+  <div class="mbox">
+    <div class="mhd"><h3 id="addGameTitle">➕ Add New Game</h3><button class="mcls" onclick="closeModal('addGameModal')">&#x2715;</button></div>
+    <div class="mbody">
+      <div class="fr"><div class="fg"><label class="fl">Game ID *</label><input type="text" class="fi" id="ng-id" placeholder="minecraft, rust..."></div><div class="fg"><label class="fl">Display Name *</label><input type="text" class="fi" id="ng-name" placeholder="Minecraft"></div></div>
+      <div class="fr"><div class="fg"><label class="fl">Icon (emoji)</label><input type="text" class="fi" id="ng-icon" placeholder="🎮"></div><div class="fg"><label class="fl">Tag Label</label><input type="text" class="fi" id="ng-tag" placeholder="POPULAR"></div></div>
+      <div class="fg"><label class="fl">Tag Style</label><select class="fi" id="ng-tagType"><option value="tp">Green — POPULAR</option><option value="th">Red — HOT/TRENDING</option><option value="tn">Cyan — NEW</option></select></div>
+      <div class="fg"><label class="fl">Card Image</label>
+        <div class="photo-zone" style="height:100px;" id="ngPhotoZone" onclick="triggerGamePhoto('__new__')">
+          <div class="photo-zone-ph"><span class="icon">🖼️</span><span>Click to upload image</span></div>
+          <div class="photo-zone-overlay">📷 CHANGE PHOTO</div>
+        </div>
+      </div>
+      <input type="hidden" id="ng-editId">
+      <input type="hidden" id="ng-image" value="">
+      <button class="btn-save" style="margin-top:1rem;" onclick="saveGame()">SAVE GAME</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><div class="t-ttl" id="tTitle"></div><div class="t-msg" id="tMsg"></div></div>
+<input type="file" id="globalPhotoInput" accept="image/*" style="display:none">
+
+<script>
+const CFG_KEY='nexushost_config';
+const ADMIN_KEY='nexushost_admin_creds';
+function startClock(){function tick(){document.getElementById('clock').textContent=new Date().toLocaleTimeString();}tick();setInterval(tick,1000);}
+
+// ─── NAV ───
+function showPage(name,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  if(el)el.classList.add('active');
+  const titles={dashboard:'Dashboard',orders:'Order Management',tickets:'Support Tickets',users:'User Management',plans:'Plans Editor',games:'Games Manager',content:'Site Content',features:'Features Editor',testimonials:'Testimonials Editor',webhook:'Webhook Config',settings:'Settings'};
+  document.getElementById('tbTitle').textContent=titles[name]||name;
+  if(name==='orders')renderOrdersTable();
+  if(name==='tickets')renderTicketsTable();
+  if(name==='users')renderUsersGrid();
+  if(name==='plans'){populatePlanFilter();renderPlansEditor();}
+  if(name==='games')renderGamesEditor();
+  if(name==='content')loadContentEditor();
+  if(name==='features')renderFeaturesEditor();
+  if(name==='testimonials')renderTestimonialsEditor();
+  if(name==='webhook')loadWebhookSettings();
+}
+
+// ─── INIT ───
+function initAdmin(){refreshStats();renderWeekChart();renderTopGames();renderRecentOrders();refreshBadges();loadWebhookSettings();}
+
+function refreshStats(){
+  const o=getOrders(),t=getTickets(),u=getUsers();
+  document.getElementById('st-orders').textContent=o.length;
+  document.getElementById('st-active').textContent=o.filter(x=>x.status==='active').length;
+  document.getElementById('st-tickets').textContent=t.filter(x=>x.status==='open').length;
+  document.getElementById('st-users').textContent=u.length;
+  const mrr=o.filter(x=>x.status==='active').reduce((s,x)=>s+(x.plan?.price||0),0);
+  document.getElementById('st-mrr').textContent='$'+mrr.toFixed(0);
+}
+
+function refreshBadges(){
+  const po=getOrders().filter(o=>o.status==='pending').length;
+  const ot=getTickets().filter(t=>t.status==='open').length;
+  const ob=document.getElementById('oBadge'),tb=document.getElementById('tBadge');
+  ob.textContent=po;ob.style.display=po>0?'inline':'none';
+  tb.textContent=ot;tb.style.display=ot>0?'inline':'none';
+  refreshStats();
+}
+
+function renderWeekChart(){
+  const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const orders=getOrders();
+  const counts=days.map((_,i)=>{const d=new Date();d.setDate(d.getDate()-(6-i));return orders.filter(o=>new Date(o.timestamp).toDateString()===d.toDateString()).length;});
+  const max=Math.max(...counts,1);
+  document.getElementById('weekBars').innerHTML=counts.map((c,i)=>`<div class="mb-bar" style="height:${Math.max((c/max)*100,5)}%" title="${days[i]}: ${c} orders"></div>`).join('');
+  document.getElementById('weekLabels').innerHTML=days.map(d=>`<span class="mb-lbl">${d}</span>`).join('');
+}
+
+function renderTopGames(){
+  const orders=getOrders();
+  const gc={};orders.forEach(o=>{const g=o.plan?.gameName||'Other';gc[g]=(gc[g]||0)+1;});
+  const entries=Object.entries(gc).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const total=orders.length||1;
+  const colors=['#00d4ff','#7b2fff','#ff3c6e','#00ff88','#ffcc00'];
+  const el=document.getElementById('topGames');
+  if(!entries.length){el.innerHTML='<div style="color:var(--text2);font-size:.82rem;margin-top:.5rem;">No order data yet.</div>';return;}
+  el.innerHTML=entries.map(([g,c],i)=>`
+    <div style="margin-bottom:.7rem;">
+      <div style="display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:.3rem;"><span style="color:var(--text);">${g}</span><span style="color:${colors[i%colors.length]};">${c}</span></div>
+      <div style="height:4px;background:var(--border);border-radius:2px;"><div style="height:100%;width:${(c/total)*100}%;background:${colors[i%colors.length]};border-radius:2px;"></div></div>
+    </div>`).join('');
+}
+
+function renderRecentOrders(){
+  const orders=getOrders().slice(0,5);
+  const tbody=document.getElementById('recentOTbody');
+  if(!orders.length){tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--text2);padding:1.5rem;">No orders yet</td></tr>';return;}
+  tbody.innerHTML=orders.map(o=>`<tr>
+    <td><strong>${o.customer?.name||'N/A'}</strong><br><span style="font-size:.73rem;color:var(--text2);">${o.customer?.email||''}</span></td>
+    <td>${o.plan?.gameName||''} — ${o.plan?.name||''}</td>
+    <td style="color:var(--accent);">$${o.plan?.price||0}/mo</td>
+    <td><span class="badge b-${o.status||'pending'}">${o.status||'pending'}</span></td>
+    <td style="font-size:.75rem;color:var(--text2);">${new Date(o.timestamp).toLocaleDateString()}</td>
+  </tr>`).join('');
+}
+
+// ─── ORDERS TABLE ───
+function renderOrdersTable(filter=''){
+  const orders=getOrders().filter(o=>!filter||[o.customer?.name,o.customer?.email,o.customer?.discord,o.plan?.gameName].some(v=>v?.toLowerCase().includes(filter)));
+  const tbody=document.getElementById('oTbody');
+  document.getElementById('oEmpty').style.display=orders.length===0?'block':'none';
+  tbody.innerHTML=orders.map(o=>`<tr>
+    <td style="font-family:'Share Tech Mono';font-size:.72rem;color:var(--text2);">#${String(o.id).slice(-6)}</td>
+    <td><strong>${o.customer?.name||'N/A'}</strong><br><span style="font-size:.72rem;color:var(--text2);">${o.customer?.email||''}</span></td>
+    <td style="color:var(--accent2);">${o.customer?.discord||'N/A'}</td>
+    <td>${o.plan?.gameName||'N/A'} — ${o.plan?.name||'N/A'}</td>
+    <td style="color:var(--accent);font-weight:700;">$${o.plan?.price||0}/mo</td>
+    <td style="font-size:.78rem;">${o.customer?.location||'N/A'}</td>
+    <td style="font-size:.78rem;">${o.customer?.billing||'monthly'}</td>
+    <td><select onchange="updateOrderStatus(${o.id},this.value)" style="padding:3px 8px;background:var(--bg3);border:1px solid var(--border2);border-radius:4px;color:var(--text);font-size:.78rem;outline:none;cursor:pointer;">
+      ${['pending','active','cancelled'].map(s=>`<option value="${s}" ${o.status===s?'selected':''}>${s.charAt(0).toUpperCase()+s.slice(1)}</option>`).join('')}
+    </select></td>
+    <td style="font-size:.75rem;color:var(--text2);">${new Date(o.timestamp).toLocaleDateString()}</td>
+    <td>
+      <button class="bi" onclick="viewOrder(${o.id})" title="View">👁</button>
+      <button class="bi d" onclick="deleteOrder(${o.id})" title="Delete">🗑</button>
+    </td>
+  </tr>`).join('');
+}
+function filterOrders(v){renderOrdersTable(v.toLowerCase());}
+function updateOrderStatus(id,status){const o=getOrders();const i=o.findIndex(x=>x.id===id);if(i!==-1){o[i].status=status;saveOrders(o);refreshBadges();toast('Updated','Order status → '+status);}sendWebhookAdmin('status_change',{order:o.find(x=>x.id===id)});}
+function deleteOrder(id){if(!confirm('Delete this order?'))return;saveOrders(getOrders().filter(o=>o.id!==id));renderOrdersTable();refreshBadges();toast('Deleted','Order removed.');}
+function viewOrder(id){
+  const o=getOrders().find(x=>x.id===id);if(!o)return;
+  document.getElementById('orderDetailBody').innerHTML=`
+    <div style="background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:1rem;margin-bottom:1.1rem;">
+      <div style="font-family:'Rajdhani',sans-serif;font-size:1.4rem;font-weight:700;color:var(--accent);">${o.plan?.icon||'🎮'} ${o.plan?.gameName} — ${o.plan?.name}</div>
+      <div style="font-size:.95rem;color:var(--green);font-weight:700;margin-top:4px;">$${o.plan?.price}/mo &nbsp;<span class="badge b-${o.status}">${o.status}</span></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+      ${[['Full Name',o.customer?.name],['Email',o.customer?.email],['Discord',o.customer?.discord],['Phone',o.customer?.phone||'N/A'],['Location',o.customer?.location],['Billing',o.customer?.billing],['Server Name',o.customer?.serverName||'N/A'],['Order Date',new Date(o.timestamp).toLocaleString()]].map(([l,v])=>`<div><div style="font-size:.65rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text2);">${l}</div><div style="font-size:.88rem;color:var(--text);margin-top:2px;">${v||'N/A'}</div></div>`).join('')}
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem;">
+      ${[['RAM',o.plan?.ram],['CPU',o.plan?.cpu],['Storage',o.plan?.storage],['Max Players',o.plan?.players],['Bandwidth',o.plan?.bandwidth],['Support',o.plan?.support]].map(([l,v])=>`<div><div style="font-size:.65rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text2);">${l}</div><div style="font-size:.88rem;color:var(--accent);margin-top:2px;">${v||'N/A'}</div></div>`).join('')}
+    </div>
+    ${o.customer?.notes?`<div style="padding:.8rem 1rem;background:rgba(0,212,255,.04);border:1px solid rgba(0,212,255,.1);border-radius:7px;"><div style="font-size:.65rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text2);margin-bottom:5px;">NOTES</div><div style="font-size:.86rem;color:var(--text);">${o.customer.notes}</div></div>`:''}`;
+  openModal('orderModal');
+}
+
+// ─── TICKETS ───
+let currentTkId=null;
+function renderTicketsTable(filter=''){
+  const sf=document.getElementById('tkFilterStatus')?.value||'all';
+  let tks=getTickets();
+  if(sf!=='all')tks=tks.filter(t=>t.status===sf);
+  if(filter)tks=tks.filter(t=>[t.subject,t.userName,t.user,t.category].some(v=>v?.toLowerCase().includes(filter)));
+  const tbody=document.getElementById('tkTbody');
+  document.getElementById('tkEmpty').style.display=tks.length===0?'block':'none';
+  tbody.innerHTML=tks.map(t=>`<tr>
+    <td style="font-family:'Share Tech Mono';font-size:.75rem;color:var(--accent2);">${t.id}</td>
+    <td><strong>${t.userName||'N/A'}</strong><br><span style="font-size:.72rem;color:var(--text2);">${t.user}</span></td>
+    <td style="color:var(--accent2);">${t.discord||'N/A'}</td>
+    <td style="font-size:.82rem;">${t.category}</td>
+    <td>${t.subject}</td>
+    <td><span class="badge b-${t.priority==='critical'?'critical':t.priority==='high'?'high':'open'}">${t.priority}</span></td>
+    <td><span class="badge b-${t.status}">${t.status}</span></td>
+    <td style="font-size:.75rem;color:var(--text2);">${new Date(t.timestamp).toLocaleDateString()}</td>
+    <td>
+      <button class="bi s" onclick="openReplyModal('${t.id}')" title="Reply">💬</button>
+      <button class="bi d" onclick="deleteTicket('${t.id}')" title="Delete">🗑</button>
+    </td>
+  </tr>`).join('');
+}
+function filterTickets(v){renderTicketsTable(v.toLowerCase());}
+function deleteTicket(id){if(!confirm('Delete this ticket?'))return;saveTickets(getTickets().filter(t=>t.id!==id));renderTicketsTable();refreshBadges();toast('Deleted','Ticket removed.');}
+function openReplyModal(id){
+  currentTkId=id;
+  const t=getTickets().find(x=>x.id===id);if(!t)return;
+  document.getElementById('replyStatus').value=t.status;
+  document.getElementById('replyText').value='';
+  document.getElementById('tkDetailBox').innerHTML=`
+    <div style="display:flex;align-items:center;gap:.7rem;flex-wrap:wrap;margin-bottom:.5rem;">
+      <span style="font-family:'Share Tech Mono';font-size:.75rem;color:var(--accent2);">${t.id}</span>
+      <span class="badge b-${t.status}">${t.status}</span>
+      <span class="badge b-${t.priority==='critical'?'critical':t.priority==='high'?'high':'open'}">${t.priority}</span>
+    </div>
+    <div style="font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;color:#fff;margin-bottom:.3rem;">${t.subject}</div>
+    <div style="font-size:.72rem;color:var(--text2);margin-bottom:.5rem;">${t.category} · ${t.userName} (${t.user}) ${t.discord?'· '+t.discord:''}</div>
+    <div style="font-size:.84rem;color:var(--text2);line-height:1.65;">${t.message}</div>`;
+  const thread=document.getElementById('tkThread');
+  if(t.replies&&t.replies.length){
+    thread.innerHTML='<div style="font-size:.68rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text2);margin-bottom:.7rem;">THREAD</div>'+
+      t.replies.map(r=>`<div class="thread-bubble tb-${r.role}"><div class="tb-from ${r.role}">${r.from}<span class="tb-time">${new Date(r.timestamp).toLocaleString()}</span></div><div style="clear:both;margin-bottom:3px;"></div>${r.message}</div>`).join('');
+  }else thread.innerHTML='';
+  openModal('replyModal');
+}
+function sendReply(){
+  const msg=document.getElementById('replyText').value.trim();
+  const status=document.getElementById('replyStatus').value;
+  if(!msg)return toast('Error','Please enter a reply message.',true);
+  const tks=getTickets();
+  const i=tks.findIndex(t=>t.id===currentTkId);if(i===-1)return;
+  if(!tks[i].replies)tks[i].replies=[];
+  tks[i].replies.push({role:'admin',from:'Support Team',message:msg,timestamp:new Date().toISOString()});
+  tks[i].status=status;
+  saveTickets(tks);
+  sendWebhookAdmin('reply',{ticket:tks[i],replyMsg:msg});
+  closeModal('replyModal');renderTicketsTable();refreshBadges();
+  toast('Reply Sent','Your reply has been delivered.');
+}
+
+// ─── USERS ───
+function renderUsersGrid(filter=''){
+  const users=getUsers().filter(u=>!filter||[u.name,u.email,u.discord].some(v=>v?.toLowerCase().includes(filter)));
+  const grid=document.getElementById('usersGrid');
+  document.getElementById('usersEmpty').style.display=users.length===0?'block':'none';
+  grid.innerHTML=users.map(u=>{
+    const uOrders=getOrders().filter(o=>o.customer?.email===u.email).length;
+    const uTks=getTickets().filter(t=>t.user===u.email).length;
+    return`<div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:1.1rem;display:flex;align-items:flex-start;gap:.9rem;transition:border-color .2s;" onmouseover="this.style.borderColor='var(--border2)'" onmouseout="this.style.borderColor='var(--border)'">
+      <div style="width:40px;height:40px;border-radius:9px;background:linear-gradient(135deg,var(--accent2),var(--accent));display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:700;color:#fff;flex-shrink:0;">${(u.name||'U')[0].toUpperCase()}</div>
+      <div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:.98rem;font-weight:700;color:#fff;">${u.name}</div>
+        <div style="font-size:.75rem;color:var(--text2);margin-top:1px;">${u.email}</div>
+        <div style="font-size:.72rem;color:var(--text2);margin-top:3px;">${u.discord||'No Discord'}</div>
+        <div style="font-size:.7rem;color:var(--text2);margin-top:4px;">📦 ${uOrders} orders &nbsp;·&nbsp; 🎫 ${uTks} tickets</div>
+        <div style="font-size:.7rem;color:var(--text2);margin-top:2px;">Joined ${new Date(u.created||Date.now()).toLocaleDateString()}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function filterUsers(v){renderUsersGrid(v.toLowerCase());}
+
+// ─── PLANS EDITOR ───
+let planPhotoTarget=null;
+
+function populatePlanFilter(){
+  const cfg=getCfg();
+  const games=[...new Set((cfg.plans||[]).map(p=>p.game))];
+  const sel=document.getElementById('planFilterGame');
+  const cur=sel.value;
+  sel.innerHTML='<option value="all">All Games</option>'+games.map(g=>{const p=(cfg.plans||[]).find(x=>x.game===g);return`<option value="${g}" ${cur===g?'selected':''}>${p?p.gameName:g}</option>`;}).join('');
+}
+
+function renderPlansEditor(){
+  const cfg=getCfg();
+  const filter=document.getElementById('planFilterGame')?.value||'all';
+  const plans=filter==='all'?(cfg.plans||[]):(cfg.plans||[]).filter(p=>p.game===filter);
+  const grid=document.getElementById('plansEditorGrid');
+  grid.innerHTML=plans.map((p,idx)=>{
+    const realIdx=(cfg.plans||[]).findIndex(x=>x.id===p.id);
+    const imgHtml=p.image?`<img src="${p.image}" style="width:100%;height:100%;object-fit:cover;display:block;" alt="">`:`<div class="pe-img-ph"><span class="ei2">${p.icon}</span><span>Click to add image</span></div>`;
+    return`<div class="pe-card ${p.featured?'featured-card':''}" id="pec-${p.id}">
+      <div class="pe-img" onclick="triggerPlanPhoto('${p.id}')">
+        ${imgHtml}
+        <div class="pe-img-hover">📷 CHANGE PHOTO</div>
+      </div>
+      <div class="pe-body">
+        <div class="pe-game">${p.gameName}</div>
+        <div class="pe-title">${p.name}</div>
+        <div class="pe-fields">
+          <div class="pe-row">
+            <div><label style="font-size:.62rem;color:var(--text2);display:block;margin-bottom:2px;">PLAN NAME</label><input class="si-input" value="${p.name}" onchange="updatePlanField('${p.id}','name',this.value)"></div>
+            <div><label style="font-size:.62rem;color:var(--text2);display:block;margin-bottom:2px;">PRICE $/MO</label><input type="number" class="si-input" value="${p.price}" step="0.01" onchange="updatePlanField('${p.id}','price',parseFloat(this.value)||0)"></div>
+          </div>
+          <div class="pe-row">
+            <div><label style="font-size:.62rem;color:var(--text2);display:block;margin-bottom:2px;">RAM</label><input class="si-input" value="${p.ram}" onchange="updatePlanField('${p.id}','ram',this.value)"></div>
+            <div><label style="font-size:.62rem;color:var(--text2);display:block;margin-bottom:2px;">CPU</label><input class="si-input" value="${p.cpu}" onchange="updatePlanField('${p.id}','cpu',this.value)"></div>
+          </div>
+          <div class="pe-row">
+            <div><label style="font-size:.62rem;color:var(--text2);display:block;margin-bottom:2px;">STORAGE</label><input class="si-input" value="${p.storage}" onchange="updatePlanField('${p.id}','storage',this.value)"></div>
+            <div><label style="font-size:.62rem;color:var(--text2);display:block;margin-bottom:2px;">MAX PLAYERS</label><input type="number" class="si-input" value="${p.players}" onchange="updatePlanField('${p.id}','players',parseInt(this.value)||0)"></div>
+          </div>
+          <div class="pe-row">
+            <div><label style="font-size:.62rem;color:var(--text2);display:block;margin-bottom:2px;">BANDWIDTH</label><input class="si-input" value="${p.bandwidth||'1Gbps'}" onchange="updatePlanField('${p.id}','bandwidth',this.value)"></div>
+            <div><label style="font-size:.62rem;color:var(--text2);display:block;margin-bottom:2px;">BACKUPS</label><input class="si-input" value="${p.backups||'Daily'}" onchange="updatePlanField('${p.id}','backups',this.value)"></div>
+          </div>
+          <div><label style="font-size:.62rem;color:var(--text2);display:block;margin-bottom:2px;">SUPPORT LEVEL</label><input class="si-input" value="${p.support||'24/7'}" onchange="updatePlanField('${p.id}','support',this.value)"></div>
+          <div><label style="font-size:.62rem;color:var(--text2);display:block;margin-bottom:2px;">RIBBON LABEL</label><input class="si-input" value="${p.ribbon||''}" placeholder="e.g. BEST VALUE" onchange="updatePlanField('${p.id}','ribbon',this.value)"></div>
+          <div><label style="font-size:.62rem;color:var(--text2);display:block;margin-bottom:2px;">DESCRIPTION</label><input class="si-input" value="${p.desc||''}" placeholder="Short description..." onchange="updatePlanField('${p.id}','desc',this.value)"></div>
+          <div>
+            <label style="font-size:.62rem;color:var(--text2);display:block;margin-bottom:4px;">EXTRAS / FEATURES</label>
+            <div class="tag-input-wrap" id="tags-${p.id}" onclick="focusTagInput('${p.id}')">
+              ${(p.extras||[]).map(e=>`<span class="tag-chip">${e}<span class="tx" onclick="removeExtra('${p.id}','${e}',event)">×</span></span>`).join('')}
+              <input type="text" style="border:none;background:transparent;color:var(--text);font-size:.75rem;outline:none;min-width:80px;font-family:'Exo 2',sans-serif;" placeholder="Add feature..." id="tag-inp-${p.id}" onkeydown="if(event.key==='Enter'||event.key===','){event.preventDefault();addExtra('${p.id}',this);}">
+            </div>
+          </div>
+          <div style="display:flex;gap:1.2rem;flex-wrap:wrap;margin-top:.3rem;">
+            <label class="toggle-wrap"><span class="toggle"><input type="checkbox" ${p.featured?'checked':''} onchange="updatePlanField('${p.id}','featured',this.checked)"><span class="toggle-slider"></span></span><span class="toggle-lbl">Featured</span></label>
+            <label class="toggle-wrap"><span class="toggle"><input type="checkbox" ${p.ddos!==false?'checked':''} onchange="updatePlanField('${p.id}','ddos',this.checked)"><span class="toggle-slider"></span></span><span class="toggle-lbl">DDoS</span></label>
+            <label class="toggle-wrap"><span class="toggle"><input type="checkbox" ${p.visible!==false?'checked':''} onchange="updatePlanField('${p.id}','visible',this.checked)"><span class="toggle-slider"></span></span><span class="toggle-lbl">Visible</span></label>
+          </div>
+        </div>
+      </div>
+      <div class="pe-actions">
+        <button class="btn-save btn-sm" onclick="publishPlan('${p.id}')">✓ SAVE</button>
+        <button class="btn-danger btn-sm" onclick="deletePlan('${p.id}')">🗑 DELETE</button>
+        ${p.image?`<button class="btn-outline2 btn-sm" onclick="removePlanPhoto('${p.id}')">✕ PHOTO</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+  if(!plans.length) grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--text2);">No plans for this game. Click "+ ADD PLAN" to create one.</div>';
+}
+
+function triggerPlanPhoto(planId){
+  planPhotoTarget={type:'plan',id:planId};
+  document.getElementById('planPhotoInput').value='';
+  document.getElementById('planPhotoInput').click();
+}
+document.getElementById('planPhotoInput').addEventListener('change',function(e){
+  const file=e.target.files[0];if(!file||!planPhotoTarget)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const cfg=getCfg();
+    if(planPhotoTarget.type==='plan'){
+      const i=(cfg.plans||[]).findIndex(p=>p.id===planPhotoTarget.id);
+      if(i!==-1){cfg.plans[i].image=ev.target.result;saveCfg(cfg);renderPlansEditor();toast('Photo Updated','Plan image changed.');}
+    }
+  };
+  reader.readAsDataURL(file);
+  this.value='';
+});
+
+function removePlanPhoto(id){
+  const cfg=getCfg();const i=(cfg.plans||[]).findIndex(p=>p.id===id);
+  if(i!==-1){cfg.plans[i].image='';saveCfg(cfg);renderPlansEditor();toast('Removed','Plan photo removed.');}
+}
+
+function updatePlanField(id,field,value){
+  const cfg=getCfg();const i=(cfg.plans||[]).findIndex(p=>p.id===id);
+  if(i!==-1){cfg.plans[i][field]=value;saveCfg(cfg);}
+}
+
+function publishPlan(id){
+  // Already saved via updatePlanField, just notify
+  toast('Published','Plan saved and live on site! ✓');
+}
+
+function publishAll(){saveCfg(getCfg());toast('Published','All plans published to live site! 🚀');}
+
+function deletePlan(id){
+  if(!confirm('Delete this plan? This cannot be undone.'))return;
+  const cfg=getCfg();cfg.plans=(cfg.plans||[]).filter(p=>p.id!==id);saveCfg(cfg);
+  populatePlanFilter();renderPlansEditor();toast('Deleted','Plan removed from site.');
+}
+
+function addExtra(id,input){
+  const val=input.value.replace(',','').trim();if(!val)return;
+  const cfg=getCfg();const i=(cfg.plans||[]).findIndex(p=>p.id===id);
+  if(i!==-1){if(!cfg.plans[i].extras)cfg.plans[i].extras=[];cfg.plans[i].extras.push(val);saveCfg(cfg);}
+  input.value='';renderPlansEditor();
+}
+
+function removeExtra(id,extra,e){
+  e.stopPropagation();
+  const cfg=getCfg();const i=(cfg.plans||[]).findIndex(p=>p.id===id);
+  if(i!==-1){cfg.plans[i].extras=(cfg.plans[i].extras||[]).filter(x=>x!==extra);saveCfg(cfg);}
+  renderPlansEditor();
+}
+
+function focusTagInput(id){const inp=document.getElementById('tag-inp-'+id);if(inp)inp.focus();}
+
+function openAddPlanModal(editId=null){
+  const cfg=getCfg();
+  if(editId){
+    const p=(cfg.plans||[]).find(x=>x.id===editId);
+    if(!p)return;
+    document.getElementById('addPlanTitle').textContent='✏️ Edit Plan';
+    document.getElementById('np-editId').value=editId;
+    document.getElementById('np-game').value=p.game;
+    document.getElementById('np-gameName').value=p.gameName;
+    document.getElementById('np-name').value=p.name;
+    document.getElementById('np-icon').value=p.icon||'';
+    document.getElementById('np-price').value=p.price;
+    document.getElementById('np-ram').value=p.ram;
+    document.getElementById('np-cpu').value=p.cpu;
+    document.getElementById('np-storage').value=p.storage;
+    document.getElementById('np-players').value=p.players;
+    document.getElementById('np-bandwidth').value=p.bandwidth||'';
+    document.getElementById('np-backups').value=p.backups||'';
+    document.getElementById('np-support').value=p.support||'';
+    document.getElementById('np-ribbon').value=p.ribbon||'';
+    document.getElementById('np-desc').value=p.desc||'';
+    document.getElementById('np-extras').value=(p.extras||[]).join(', ');
+    document.getElementById('np-featured').checked=!!p.featured;
+    document.getElementById('np-ddos').checked=p.ddos!==false;
+  }else{
+    document.getElementById('addPlanTitle').textContent='➕ Add New Plan';
+    document.getElementById('np-editId').value='';
+    ['np-game','np-gameName','np-name','np-icon','np-price','np-ram','np-cpu','np-storage','np-players','np-bandwidth','np-backups','np-support','np-ribbon','np-desc','np-extras'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('np-featured').checked=false;
+    document.getElementById('np-ddos').checked=true;
+  }
+  openModal('addPlanModal');
+}
+
+function savePlan(){
+  const editId=document.getElementById('np-editId').value;
+  const game=document.getElementById('np-game').value.trim();
+  const gameName=document.getElementById('np-gameName').value.trim();
+  const name=document.getElementById('np-name').value.trim();
+  const price=parseFloat(document.getElementById('np-price').value)||0;
+  if(!game||!gameName||!name||!price)return toast('Missing','Fill required fields.',true);
+
+  const cfg=getCfg();
+  const plan={
+    id:editId||game+'-'+Date.now(),game,gameName,icon:document.getElementById('np-icon').value||'🎮',
+    name,price,
+    ram:document.getElementById('np-ram').value||'2GB',
+    cpu:document.getElementById('np-cpu').value||'2 vCPU',
+    storage:document.getElementById('np-storage').value||'20GB SSD',
+    players:parseInt(document.getElementById('np-players').value)||10,
+    bandwidth:document.getElementById('np-bandwidth').value||'1Gbps',
+    backups:document.getElementById('np-backups').value||'Daily',
+    support:document.getElementById('np-support').value||'Standard',
+    ribbon:document.getElementById('np-ribbon').value||'',
+    desc:document.getElementById('np-desc').value||'',
+    extras:document.getElementById('np-extras').value.split(',').map(s=>s.trim()).filter(Boolean),
+    featured:document.getElementById('np-featured').checked,
+    ddos:document.getElementById('np-ddos').checked,
+    image:editId?(cfg.plans||[]).find(p=>p.id===editId)?.image||'':'',
+    visible:true
+  };
+
+  if(editId){
+    const i=(cfg.plans||[]).findIndex(p=>p.id===editId);
+    if(i!==-1)cfg.plans[i]=plan;else cfg.plans.push(plan);
+  }else{
+    if(!cfg.plans)cfg.plans=[];cfg.plans.push(plan);
+  }
+  saveCfg(cfg);closeModal('addPlanModal');populatePlanFilter();renderPlansEditor();
+  toast('Saved',editId?'Plan updated!':'New plan added to site!');
+}
+
+// ─── GAMES EDITOR ───
+let gamePhotoTarget=null;
+
+function renderGamesEditor(){
+  const cfg=getCfg();
+  const games=cfg.games||DEFAULTS.games;
+  const grid=document.getElementById('gamesEditorGrid');
+  grid.innerHTML=games.map(g=>{
+    const bgStyle=g.image?`background-image:url('${g.image}');background-size:cover;background-position:center;`:`background:${g.bg||'#0d1428'};`;
+    return`<div class="ge-card">
+      <div class="ge-img" onclick="triggerGamePhoto('${g.id}')">
+        <div class="ge-img-bg" style="${bgStyle}">${g.image?'':g.icon}</div>
+        <div class="ge-img-hover">📷 CHANGE PHOTO</div>
+      </div>
+      <div class="ge-body">
+        <div class="pe-row" style="margin-bottom:.6rem;">
+          <div><label style="font-size:.6rem;color:var(--text2);display:block;margin-bottom:2px;">GAME NAME</label><input class="si-input" value="${g.name}" onchange="updateGameField('${g.id}','name',this.value)"></div>
+          <div><label style="font-size:.6rem;color:var(--text2);display:block;margin-bottom:2px;">ICON</label><input class="si-input" value="${g.icon}" onchange="updateGameField('${g.id}','icon',this.value)" style="width:60px;text-align:center;font-size:1.2rem;"></div>
+        </div>
+        <div class="pe-row" style="margin-bottom:.6rem;">
+          <div><label style="font-size:.6rem;color:var(--text2);display:block;margin-bottom:2px;">TAG LABEL</label><input class="si-input" value="${g.tag||''}" onchange="updateGameField('${g.id}','tag',this.value)"></div>
+          <div><label style="font-size:.6rem;color:var(--text2);display:block;margin-bottom:2px;">TAG STYLE</label>
+            <select class="si-input" onchange="updateGameField('${g.id}','tagType',this.value)">
+              <option value="tp" ${g.tagType==='tp'?'selected':''}>Green</option>
+              <option value="th" ${g.tagType==='th'?'selected':''}>Red</option>
+              <option value="tn" ${g.tagType==='tn'?'selected':''}>Cyan</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;margin-top:.4rem;">
+          <label class="toggle-wrap"><span class="toggle"><input type="checkbox" ${g.visible!==false?'checked':''} onchange="updateGameField('${g.id}','visible',this.checked)"><span class="toggle-slider"></span></span><span class="toggle-lbl">Visible on site</span></label>
+        </div>
+        <div style="display:flex;gap:.5rem;margin-top:.8rem;flex-wrap:wrap;">
+          <button class="btn-save btn-sm" onclick="saveGame_inline('${g.id}')">✓ SAVE</button>
+          ${g.image?`<button class="btn-outline2 btn-sm" onclick="removeGamePhoto('${g.id}')">✕ PHOTO</button>`:''}
+          <button class="btn-danger btn-sm" onclick="deleteGame('${g.id}')">🗑</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function triggerGamePhoto(gameId){
+  gamePhotoTarget=gameId;
+  document.getElementById('gamePhotoInput').value='';
+  document.getElementById('gamePhotoInput').click();
+}
+document.getElementById('gamePhotoInput').addEventListener('change',function(e){
+  const file=e.target.files[0];if(!file||!gamePhotoTarget)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    if(gamePhotoTarget==='__new__'){
+      document.getElementById('ng-image').value=ev.target.result;
+      const zone=document.getElementById('ngPhotoZone');
+      zone.innerHTML=`<img src="${ev.target.result}" style="width:100%;height:100%;object-fit:cover;display:block;"><div class="photo-zone-overlay">📷 CHANGE PHOTO</div>`;
+    }else{
+      const cfg=getCfg();
+      const i=(cfg.games||[]).findIndex(g=>g.id===gamePhotoTarget);
+      if(i!==-1){cfg.games[i].image=ev.target.result;saveCfg(cfg);renderGamesEditor();toast('Photo Updated','Game image changed.');}
+    }
+    gamePhotoTarget=null;
+  };
+  reader.readAsDataURL(file);
+  this.value='';
+});
+
+function updateGameField(id,field,value){
+  const cfg=getCfg();const i=(cfg.games||[]).findIndex(g=>g.id===id);
+  if(i!==-1){cfg.games[i][field]=value;saveCfg(cfg);}
+}
+
+function saveGame_inline(id){toast('Saved','Game card updated. ✓');}
+
+function removeGamePhoto(id){
+  const cfg=getCfg();const i=(cfg.games||[]).findIndex(g=>g.id===id);
+  if(i!==-1){cfg.games[i].image='';saveCfg(cfg);renderGamesEditor();toast('Removed','Game photo removed.');}
+}
+
+function deleteGame(id){
+  if(!confirm('Delete this game? This will also hide its plans.'))return;
+  const cfg=getCfg();cfg.games=(cfg.games||[]).filter(g=>g.id!==id);saveCfg(cfg);renderGamesEditor();toast('Deleted','Game removed.');
+}
+
+function openAddGameModal(){
+  document.getElementById('addGameTitle').textContent='➕ Add New Game';
+  document.getElementById('ng-editId').value='';
+  document.getElementById('ng-image').value='';
+  ['ng-id','ng-name','ng-icon','ng-tag'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('ngPhotoZone').innerHTML=`<div class="photo-zone-ph"><span class="icon">🖼️</span><span>Click to upload image</span></div><div class="photo-zone-overlay">📷 CHANGE PHOTO</div>`;
+  openModal('addGameModal');
+}
+
+function saveGame(){
+  const id=document.getElementById('ng-id').value.trim().toLowerCase().replace(/\s+/g,'');
+  const name=document.getElementById('ng-name').value.trim();
+  if(!id||!name)return toast('Missing','Fill required fields.',true);
+  const cfg=getCfg();
+  const game={
+    id,name,
+    icon:document.getElementById('ng-icon').value||'🎮',
+    tag:document.getElementById('ng-tag').value||'POPULAR',
+    tagType:document.getElementById('ng-tagType').value||'tp',
+    bg:'linear-gradient(135deg,#0d1428,#1a2a4a)',
+    image:document.getElementById('ng-image').value||'',
+    visible:true
+  };
+  if(!cfg.games)cfg.games=[];
+  const ei=cfg.games.findIndex(g=>g.id===id);
+  if(ei!==-1)cfg.games[ei]=game;else cfg.games.push(game);
+  saveCfg(cfg);closeModal('addGameModal');renderGamesEditor();toast('Saved','Game added to site!');
+}
+
+// ─── SITE CONTENT EDITOR ───
+function loadContentEditor(){
+  const cfg=getCfg();const s=cfg.site||{};const h=cfg.hero||{};
+  document.getElementById('cSiteName').value=s.name||'';
+  document.getElementById('cTagline').value=s.tagline||'';
+  document.getElementById('cLogo').value=s.logo||'';
+  document.getElementById('cCopy').value=s.copyright||'';
+  document.getElementById('cDesc').value=s.desc||'';
+  document.getElementById('cDiscord').value=s.discord||'';
+  document.getElementById('hBadge').value=h.badge||'';
+  document.getElementById('hLine1').value=h.line1||'';
+  document.getElementById('hLine2').value=h.line2||'';
+  document.getElementById('hSub').value=h.sub||'';
+  updatePreview();
+}
+
+function updatePreview(){
+  const n=document.getElementById('cSiteName')?.value||'NexusHost';
+  const h1=document.getElementById('hLine1')?.value||'';
+  const h2=document.getElementById('hLine2')?.value||'';
+  const pn=document.getElementById('prevSiteName');const ph=document.getElementById('prevHero');
+  if(pn)pn.textContent=n;
+  if(ph)ph.textContent=h1+' '+h2;
+}
+
+['cSiteName','hLine1','hLine2'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(el)el.addEventListener('input',updatePreview);
+});
+
+function saveSiteContent(){
+  const cfg=getCfg();
+  cfg.site={
+    name:document.getElementById('cSiteName').value,
+    tagline:document.getElementById('cTagline').value,
+    logo:document.getElementById('cLogo').value,
+    copyright:document.getElementById('cCopy').value,
+    desc:document.getElementById('cDesc').value,
+    discord:document.getElementById('cDiscord').value
+  };
+  saveCfg(cfg);updatePreview();toast('Saved','Site identity saved and live! ✓');
+}
+
+function saveHeroContent(){
+  const cfg=getCfg();
+  cfg.hero={
+    badge:document.getElementById('hBadge').value,
+    line1:document.getElementById('hLine1').value,
+    line2:document.getElementById('hLine2').value,
+    sub:document.getElementById('hSub').value
+  };
+  saveCfg(cfg);updatePreview();toast('Saved','Hero section updated! ✓');
+}
+
+// ─── FEATURES EDITOR ───
+function renderFeaturesEditor(){
+  const cfg=getCfg();const feats=cfg.features||DEFAULTS.features;
+  const styles=['fi-c','fi-p','fi-r','fi-g'];
+  document.getElementById('featuresEditor').innerHTML=feats.map((f,i)=>`
+    <div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:1.1rem;margin-bottom:.8rem;display:flex;gap:1rem;align-items:flex-start;flex-wrap:wrap;">
+      <div style="display:flex;gap:.6rem;align-items:center;flex-shrink:0;">
+        <input class="si-input" value="${f.icon}" style="width:50px;text-align:center;font-size:1.3rem;" onchange="updateFeat(${i},'icon',this.value)" title="Emoji icon">
+        <select class="si-input" style="width:100px;" onchange="updateFeat(${i},'style',this.value)">
+          ${styles.map(s=>`<option value="${s}" ${f.style===s?'selected':''}>${s.replace('fi-','').toUpperCase()}</option>`).join('')}
+        </select>
+      </div>
+      <div style="flex:1;min-width:200px;">
+        <input class="si-input" value="${f.title}" placeholder="Title" style="margin-bottom:.4rem;" onchange="updateFeat(${i},'title',this.value)">
+        <input class="si-input" value="${f.desc}" placeholder="Description" onchange="updateFeat(${i},'desc',this.value)">
+      </div>
+      <button class="btn-danger btn-sm" onclick="removeFeat(${i})">🗑</button>
+    </div>`).join('');
+}
+
+function updateFeat(idx,field,val){const cfg=getCfg();if(cfg.features&&cfg.features[idx])cfg.features[idx][field]=val;saveCfg(cfg);}
+function removeFeat(idx){const cfg=getCfg();if(cfg.features)cfg.features.splice(idx,1);saveCfg(cfg);renderFeaturesEditor();}
+function addFeature(){
+  const cfg=getCfg();if(!cfg.features)cfg.features=JSON.parse(JSON.stringify(DEFAULTS.features));
+  cfg.features.push({icon:'⭐',style:'fi-c',title:'New Feature',desc:'Describe this feature here.'});
+  saveCfg(cfg);renderFeaturesEditor();
+}
+function saveFeatures(){toast('Saved','Features saved and live! ✓');}
+
+// ─── TESTIMONIALS EDITOR ───
+function renderTestimonialsEditor(){
+  const cfg=getCfg();const ts=cfg.testimonials||DEFAULTS.testimonials;
+  const colors=['#00d4ff','#7b2fff','#ff3c6e','#00ff88','#ffcc00','#ff8c00'];
+  document.getElementById('testiEditor').innerHTML=ts.map((t,i)=>`
+    <div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:1.1rem;margin-bottom:.8rem;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 60px 60px;gap:.7rem;margin-bottom:.6rem;align-items:end;flex-wrap:wrap;">
+        <div><label style="font-size:.6rem;color:var(--text2);display:block;margin-bottom:2px;">NAME</label><input class="si-input" value="${t.name}" onchange="updateTesti(${i},'name',this.value)"></div>
+        <div><label style="font-size:.6rem;color:var(--text2);display:block;margin-bottom:2px;">GAME</label><input class="si-input" value="${t.game}" onchange="updateTesti(${i},'game',this.value)"></div>
+        <div><label style="font-size:.6rem;color:var(--text2);display:block;margin-bottom:2px;">AVATAR LETTER</label><input class="si-input" value="${t.av}" maxlength="2" onchange="updateTesti(${i},'av',this.value)"></div>
+        <div><label style="font-size:.6rem;color:var(--text2);display:block;margin-bottom:2px;">COLOR</label><input type="color" value="${t.color||'#00d4ff'}" style="width:50px;height:32px;border:1px solid var(--border2);border-radius:5px;padding:2px;background:var(--bg3);cursor:pointer;" onchange="updateTesti(${i},'color',this.value)"></div>
+        <div><label style="font-size:.6rem;color:var(--text2);display:block;margin-bottom:2px;">STARS</label><input type="number" class="si-input" value="${t.stars||5}" min="1" max="5" style="width:55px;" onchange="updateTesti(${i},'stars',parseInt(this.value))"></div>
+      </div>
+      <div style="display:flex;gap:.7rem;align-items:flex-start;">
+        <textarea class="si-input" rows="2" style="flex:1;resize:vertical;" onchange="updateTesti(${i},'text',this.value)">${t.text}</textarea>
+        <button class="btn-danger btn-sm" onclick="removeTesti(${i})" style="flex-shrink:0;">🗑</button>
+      </div>
+    </div>`).join('');
+}
+
+function updateTesti(idx,field,val){const cfg=getCfg();if(cfg.testimonials&&cfg.testimonials[idx])cfg.testimonials[idx][field]=val;saveCfg(cfg);}
+function removeTesti(idx){const cfg=getCfg();if(cfg.testimonials)cfg.testimonials.splice(idx,1);saveCfg(cfg);renderTestimonialsEditor();}
+function addTestimonial(){
+  const cfg=getCfg();if(!cfg.testimonials)cfg.testimonials=JSON.parse(JSON.stringify(DEFAULTS.testimonials));
+  cfg.testimonials.push({name:'New User',game:'Game Server',av:'N',color:'#00d4ff',stars:5,text:'Amazing service!'});
+  saveCfg(cfg);renderTestimonialsEditor();
+}
+function saveTestimonials(){toast('Saved','Testimonials saved and live! ✓');}
+
+// ─── WEBHOOK ───
+function loadWebhookSettings(){
+  const url=localStorage.getItem('nexushost_webhook')||'';
+  const name=localStorage.getItem('nexushost_webhook_name')||'NexusHost';
+  if(document.getElementById('whUrl')){document.getElementById('whUrl').value=url;document.getElementById('whName').value=name;}
+  updateWhStatus(url);
+}
+function saveWebhook(){
+  const url=document.getElementById('whUrl').value.trim();
+  const name=document.getElementById('whName').value.trim()||'NexusHost';
+  if(url&&!url.startsWith('https://discord.com/api/webhooks/'))return toast('Invalid URL','Enter a valid Discord webhook URL.',true);
+  localStorage.setItem('nexushost_webhook',url);
+  localStorage.setItem('nexushost_webhook_name',name);
+  updateWhStatus(url);toast('Saved','Webhook URL saved.');
+  addWhLog('CONFIG','Webhook URL updated');
+}
+function updateWhStatus(url){
+  const el=document.getElementById('whStatus');if(!el)return;
+  el.innerHTML=url?'<span style="color:var(--green);">● Webhook configured and ready</span>':'<span style="color:var(--text2);">○ No webhook configured</span>';
+}
+function testWebhook(){
+  const url=localStorage.getItem('nexushost_webhook');
+  if(!url)return toast('No Webhook','Save a webhook URL first.',true);
+  fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:localStorage.getItem('nexushost_webhook_name')||'NexusHost',embeds:[{title:'✅ NexusHost Webhook Test',description:'Your Discord webhook is working correctly! You will receive order and ticket notifications here.',color:0x00ff88,timestamp:new Date().toISOString(),footer:{text:'NexusHost Admin Panel'}}]})})
+  .then(()=>{toast('Test Sent!','Check your Discord channel.');addWhLog('TEST','Test message dispatched');})
+  .catch(()=>{toast('Test Failed','Could not reach webhook URL.',true);addWhLog('ERROR','Test dispatch failed');});
+}
+function addWhLog(type,msg){
+  const log=document.getElementById('whLog');if(!log)return;
+  const time=new Date().toLocaleTimeString();
+  const color=type==='ERROR'?'var(--accent3)':type==='TEST'?'var(--accent)':'var(--green)';
+  const prev=log.innerHTML==='No dispatches yet.'?'':log.innerHTML;
+  log.innerHTML=`<span style="color:${color};">[${time}] ${type}: ${msg}</span>\n`+prev;
+}
+function sendWebhookAdmin(type,data){
+  const url=localStorage.getItem('nexushost_webhook');if(!url)return;
+  let embed;
+  if(type==='reply'){embed={title:'💬 Admin Replied',color:0x7b2fff,fields:[{name:'Ticket',value:data.ticket.id,inline:true},{name:'User',value:data.ticket.userName,inline:true},{name:'Status',value:data.ticket.status,inline:true},{name:'Reply',value:(data.replyMsg||'').substring(0,300),inline:false}],timestamp:new Date().toISOString(),footer:{text:'NexusHost Support'}};}
+  else if(type==='status_change'){embed={title:'🔄 Order Status Changed',color:0xffcc00,fields:[{name:'Customer',value:data.order?.customer?.name||'N/A',inline:true},{name:'Plan',value:data.order?.plan?.gameName+' — '+data.order?.plan?.name,inline:true},{name:'New Status',value:data.order?.status||'N/A',inline:true}],timestamp:new Date().toISOString(),footer:{text:'NexusHost Orders'}};}
+  if(!embed)return;
+  fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:localStorage.getItem('nexushost_webhook_name')||'NexusHost',embeds:[embed]})})
+  .then(()=>addWhLog(type.toUpperCase(),'Dispatch sent'))
+  .catch(()=>addWhLog('ERROR','Dispatch failed'));
+}
+
+// ─── SETTINGS ───
+function changePass(){
+  const curr=document.getElementById('sCurrPass').value;
+  const newp=document.getElementById('sNewPass').value;
+  const conf=document.getElementById('sConfPass').value;
+  const creds=getAdminCreds();
+  if(curr!==creds.password)return toast('Error','Current password incorrect.',true);
+  if(newp!==conf)return toast('Error','Passwords do not match.',true);
+  if(newp.length<6)return toast('Error','Minimum 6 characters.',true);
+  localStorage.setItem(ADMIN_KEY,JSON.stringify({username:creds.username,password:newp}));
+  document.getElementById('sCurrPass').value='';document.getElementById('sNewPass').value='';document.getElementById('sConfPass').value='';
+  toast('Updated','Password changed successfully.');
+}
+
+function exportData(){
+  const data={config:getCfg(),orders:getOrders(),tickets:getTickets(),users:getUsers(),exported:new Date().toISOString()};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='nexushost-export-'+Date.now()+'.json';a.click();
+  toast('Exported','Data exported as JSON file.');
+}
+
+function resetConfig(){
+  if(!confirm('Reset all site configuration to defaults? Plans, games, content will be reset. Orders and users are NOT affected.'))return;
+  localStorage.setItem(CFG_KEY,JSON.stringify(DEFAULTS));
+  toast('Reset','Site config restored to defaults.');
+}
+
+function clearData(type){
+  if(!confirm(`Delete ALL ${type}? This cannot be undone.`))return;
+  localStorage.removeItem('nexushost_'+type);
+  refreshBadges();
+  if(type==='orders')renderOrdersTable();
+  if(type==='tickets')renderTicketsTable();
+  if(type==='users')renderUsersGrid();
+  toast('Cleared','All '+type+' deleted.');
+}
+
+// ─── MODALS ───
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.movl').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeModal(o.id);}));
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.movl.open').forEach(m=>m.classList.remove('open'));});
+
+// ─── TOAST ───
+function toast(title,msg,err=false){
+  const t=document.getElementById('toast');
+  document.getElementById('tTitle').textContent=title;
+  document.getElementById('tMsg').textContent=msg;
+  t.className='toast'+(err?' err':'');t.classList.add('on');
+  setTimeout(()=>t.classList.remove('on'),3500);
+}
+</script>
+</body>
+</html>
+
+</script>
+</body>
+</html>
