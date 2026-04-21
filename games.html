@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Browse all 30+ game server options at NexusHost. Minecraft, Rust, GTA V, ARK, CS2, Valheim, Palworld and many more.">
+<meta name="theme-color" content="#040711">
+<title>All Games — NexusHost Game Server Hosting</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+.page-hero{padding:clamp(110px,16vw,160px) 0 clamp(40px,6vw,64px);position:relative;z-index:1;}
+.page-hero h1{font-family:'Rajdhani',sans-serif;font-size:clamp(2.2rem,6vw,4rem);font-weight:700;color:#fff;line-height:1;margin-bottom:.7rem;}
+.page-hero p{font-size:clamp(.9rem,1.4vw,1.05rem);color:var(--c-text2);max-width:520px;}
+.search-bar{display:flex;align-items:center;gap:.8rem;background:var(--c-panel);border:1px solid var(--c-border2);border-radius:var(--r-lg);padding:10px 16px;margin-bottom:clamp(24px,4vw,40px);max-width:600px;transition:border-color .2s;}
+.search-bar:focus-within{border-color:var(--c-accent);}
+.search-bar input{flex:1;background:transparent;border:none;outline:none;color:var(--c-text);font-family:'Outfit',sans-serif;font-size:.95rem;min-width:0;}
+.search-bar input::placeholder{color:var(--c-text2);opacity:.5;}
+.games-full-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(clamp(240px,25vw,280px),1fr));gap:clamp(12px,2vw,18px);}
+.game-full-card{background:var(--c-panel);border:1px solid var(--c-border);border-radius:var(--r-lg);overflow:hidden;transition:all .25s;cursor:pointer;}
+.game-full-card:hover{border-color:rgba(0,194,232,.35);transform:translateY(-4px);box-shadow:var(--glow);}
+.gfc-media{height:clamp(120px,18vw,165px);position:relative;overflow:hidden;}
+.gfc-visual{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:3rem;background-size:cover;background-position:center;transition:transform .5s;}
+.game-full-card:hover .gfc-visual{transform:scale(1.08);}
+.gfc-grad{position:absolute;inset:0;background:linear-gradient(to top,var(--c-panel) 0%,transparent 55%);}
+.gfc-tags{position:absolute;top:.6rem;left:.6rem;display:flex;gap:.3rem;}
+.gfc-body{padding:clamp(12px,2vw,16px);}
+.gfc-name{font-family:'Rajdhani',sans-serif;font-size:clamp(1rem,1.8vw,1.2rem);font-weight:700;color:#fff;margin-bottom:.2rem;}
+.gfc-cat{font-family:'Share Tech Mono',monospace;font-size:.62rem;letter-spacing:2px;text-transform:uppercase;color:var(--c-text2);margin-bottom:.6rem;}
+.gfc-specs{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:.8rem;}
+.gfc-spec{font-size:.7rem;color:var(--c-text2);background:var(--c-bg3);padding:2px 7px;border-radius:var(--r-full);border:1px solid var(--c-border);}
+.no-results{text-align:center;padding:4rem;color:var(--c-text2);display:none;}
+.no-results .nr-icon{font-size:3rem;margin-bottom:.8rem;opacity:.3;}
+@media(max-width:480px){.games-full-grid{grid-template-columns:1fr 1fr;}.gfc-visual{font-size:2rem;}}
+@media(max-width:360px){.games-full-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<header class="nav" id="mainNav">
+  <div class="nav-inner">
+    <a href="index.html" class="logo"><span class="logo-main">NEXUS</span><span class="logo-accent">HOST</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="games.html" class="active">All Games</a></li>
+      <li><a href="index.html#pricing">Pricing</a></li>
+      <li><a href="index.html#features">Features</a></li>
+      <li><a href="index.html#faq">FAQ</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="user-pill" id="uBar"><div class="user-av" id="uAv">?</div><span id="uName">User</span><button class="logout-btn" onclick="doLogout()">LOGOUT</button></div>
+      <a href="#" class="btn btn-ghost" onclick="openAuth();return false;" id="loginBtn">Login</a>
+      <button class="hamburger" id="hamburger" onclick="toggleDrawer()"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<div class="nav-overlay" id="navOverlay" onclick="closeDrawer()"></div>
+<div class="nav-drawer" id="navDrawer">
+  <ul>
+    <li><a href="index.html" onclick="closeDrawer()">🏠 Home</a></li>
+    <li><a href="games.html" onclick="closeDrawer()">🎮 All Games</a></li>
+    <li><a href="index.html#pricing" onclick="closeDrawer()">💎 Pricing</a></li>
+    <li><a href="index.html#faq" onclick="closeDrawer()">❓ FAQ</a></li>
+  </ul>
+  <a href="#" class="btn btn-ghost" onclick="openAuth();closeDrawer();return false;" id="drawerLogin">Login / Register</a>
+</div>
+
+<div class="page-hero section-alt">
+  <div class="container">
+    <div class="section-eyebrow">Game Library</div>
+    <h1>All Supported Games</h1>
+    <p>30+ games with optimized hardware, instant mod support, and DDoS protection included.</p>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <!-- SEARCH -->
+    <div class="search-bar">
+      <span>🔍</span>
+      <input type="text" id="searchInput" placeholder="Search games..." oninput="filterGames(this.value)">
+    </div>
+    <!-- CATEGORY TABS -->
+    <div class="filter-tabs" id="catTabs" style="margin-bottom:clamp(20px,3vw,32px);"></div>
+    <!-- GAMES GRID -->
+    <div class="games-full-grid" id="fullGamesGrid"></div>
+    <div class="no-results" id="noResults"><div class="nr-icon">🎮</div><p>No games found. Try a different search or category.</p></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="cta-band">
+      <div class="cta-text"><h2>Don't see your game?</h2><p>We're constantly adding new titles. Contact us and we'll get it set up.</p></div>
+      <div class="cta-actions"><a href="index.html#mytickets" class="btn btn-primary btn-lg">Request a Game →</a><a href="index.html#pricing" class="btn btn-ghost btn-lg">View Plans</a></div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-bottom" style="padding-top:0;border:none;">
+      <p>© 2025 NexusHost. All rights reserved.</p>
+      <div style="display:flex;gap:1rem;">
+        <a href="index.html" style="font-size:.82rem;color:var(--c-text2);">Home</a>
+        <a href="index.html#pricing" style="font-size:.82rem;color:var(--c-text2);">Pricing</a>
+        <a href="admin.html" style="font-size:.82rem;color:var(--c-text2);">Admin</a>
+      </div>
+      <div class="status-pill"><div class="status-dot"></div>All systems operational</div>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast"><div class="toast-title" id="tTitle"></div><div class="toast-msg" id="tMsg"></div></div>
+
+<script>
+const ALL_GAMES = [
+  {id:'minecraft',cat:'survival',name:'Minecraft',icon:'🟩',tag:'POPULAR',tagStyle:'badge-green',bg:'linear-gradient(135deg,#2d5a27,#1a3d1a)',desc:'The ultimate sandbox survival game.',minPlayers:1,maxPlayers:200,startFrom:4.99},
+  {id:'rust',cat:'survival',name:'Rust',icon:'🔥',tag:'HOT',tagStyle:'badge-red',bg:'linear-gradient(135deg,#4a1a0a,#8b3a1a)',desc:'Brutal multiplayer survival and raiding.',minPlayers:1,maxPlayers:200,startFrom:12.99},
+  {id:'gta',cat:'roleplay',name:'GTA V (FiveM)',icon:'🚗',tag:'POPULAR',tagStyle:'badge-purple',bg:'linear-gradient(135deg,#1a1a2e,#0f3460)',desc:'Custom RP servers with ESX and QBCore.',minPlayers:1,maxPlayers:128,startFrom:14.99},
+  {id:'ark',cat:'survival',name:'ARK: Survival',icon:'🦕',tag:'NEW',tagStyle:'badge-cyan',bg:'linear-gradient(135deg,#0d2b1a,#1a4a2a)',desc:'Tame dinosaurs and build tribes.',minPlayers:1,maxPlayers:70,startFrom:9.99},
+  {id:'cs2',cat:'fps',name:'Counter-Strike 2',icon:'🎯',tag:'HOT',tagStyle:'badge-red',bg:'linear-gradient(135deg,#1a0d2e,#2d1a4a)',desc:'128-tick competitive and casual servers.',minPlayers:2,maxPlayers:24,startFrom:5.99},
+  {id:'valheim',cat:'survival',name:'Valheim',icon:'⚔️',tag:'POPULAR',tagStyle:'badge-green',bg:'linear-gradient(135deg,#0a1a2e,#1a3a5a)',desc:'Viking survival with Norse mythology.',minPlayers:1,maxPlayers:64,startFrom:7.99},
+  {id:'palworld',cat:'survival',name:'Palworld',icon:'🐾',tag:'TRENDING',tagStyle:'badge-yellow',bg:'linear-gradient(135deg,#1a2e0a,#2e4a1a)',desc:'Catch and battle Pals in open world.',minPlayers:1,maxPlayers:32,startFrom:8.99},
+  {id:'tf2',cat:'fps',name:'Team Fortress 2',icon:'⚙️',tag:'CLASSIC',tagStyle:'badge-orange',bg:'linear-gradient(135deg,#4a2a0a,#8b4a1a)',desc:'Classic objective-based FPS.',minPlayers:2,maxPlayers:32,startFrom:6.99},
+  {id:'7d2d',cat:'survival',name:'7 Days to Die',icon:'🧟',tag:'POPULAR',tagStyle:'badge-green',bg:'linear-gradient(135deg,#1a1a0a,#3a2a0a)',desc:'Zombie survival with RPG and crafting.',minPlayers:1,maxPlayers:16,startFrom:8.99},
+  {id:'dayz',cat:'survival',name:'DayZ',icon:'🪖',tag:'POPULAR',tagStyle:'badge-green',bg:'linear-gradient(135deg,#0a1a0a,#1a2a0a)',desc:'Post-apocalyptic open-world survival.',minPlayers:1,maxPlayers:60,startFrom:9.99},
+  {id:'squad',cat:'fps',name:'Squad',icon:'🪖',tag:'TACTICAL',tagStyle:'badge-cyan',bg:'linear-gradient(135deg,#0a1a0a,#1a3a1a)',desc:'Realistic tactical military FPS.',minPlayers:2,maxPlayers:100,startFrom:14.99},
+  {id:'satisfactory',cat:'sandbox',name:'Satisfactory',icon:'🏭',tag:'NEW',tagStyle:'badge-cyan',bg:'linear-gradient(135deg,#1a0a2e,#2e1a4a)',desc:'First-person open-world factory building.',minPlayers:1,maxPlayers:8,startFrom:6.99},
+  {id:'terraria',cat:'sandbox',name:'Terraria',icon:'⛏️',tag:'CLASSIC',tagStyle:'badge-orange',bg:'linear-gradient(135deg,#2e1a0a,#4a2a0a)',desc:'2D sandbox adventure and exploration.',minPlayers:1,maxPlayers:16,startFrom:4.99},
+  {id:'garry',cat:'sandbox',name:"Garry's Mod",icon:'🔧',tag:'CLASSIC',tagStyle:'badge-orange',bg:'linear-gradient(135deg,#1a2e2e,#0a1a1a)',desc:'Physics sandbox with custom gamemodes.',minPlayers:1,maxPlayers:64,startFrom:5.99},
+  {id:'conan',cat:'survival',name:'Conan Exiles',icon:'⚔️',tag:'POPULAR',tagStyle:'badge-green',bg:'linear-gradient(135deg,#2e1a0a,#4a2a0a)',desc:'Survive and build in the Conan universe.',minPlayers:1,maxPlayers:40,startFrom:9.99},
+  {id:'vrising',cat:'rpg',name:'V Rising',icon:'🧛',tag:'HOT',tagStyle:'badge-red',bg:'linear-gradient(135deg,#1a0a1a,#2e0a2e)',desc:'Vampire survival RPG with castle building.',minPlayers:1,maxPlayers:40,startFrom:7.99},
+  {id:'enshrouded',cat:'survival',name:'Enshrouded',icon:'🌫️',tag:'NEW',tagStyle:'badge-cyan',bg:'linear-gradient(135deg,#0a0a2e,#1a1a4a)',desc:'Survival action RPG in a shrouded world.',minPlayers:1,maxPlayers:16,startFrom:7.99},
+  {id:'insurgency',cat:'fps',name:'Insurgency: Sandstorm',icon:'💣',tag:'TACTICAL',tagStyle:'badge-cyan',bg:'linear-gradient(135deg,#1a1a0a,#2e2e0a)',desc:'Intense modern military FPS.',minPlayers:2,maxPlayers:20,startFrom:7.99},
+  {id:'deadside',cat:'survival',name:'Deadside',icon:'🔫',tag:'SURVIVAL',tagStyle:'badge-green',bg:'linear-gradient(135deg,#1a1a1a,#2a2a2a)',desc:'Tactical open-world survival shooter.',minPlayers:1,maxPlayers:64,startFrom:8.99},
+  {id:'eco',cat:'sandbox',name:'Eco Global Survival',icon:'🌍',tag:'UNIQUE',tagStyle:'badge-green',bg:'linear-gradient(135deg,#0a2e0a,#1a4a1a)',desc:'Build civilization while protecting the ecosystem.',minPlayers:1,maxPlayers:100,startFrom:9.99},
+  {id:'scum',cat:'survival',name:'SCUM',icon:'🎮',tag:'SURVIVAL',tagStyle:'badge-green',bg:'linear-gradient(135deg,#1a2e1a,#0a1a0a)',desc:'Advanced survival with metabolism simulation.',minPlayers:1,maxPlayers:64,startFrom:9.99},
+  {id:'hurtworld',cat:'survival',name:'Hurtworld',icon:'🌵',tag:'POPULAR',tagStyle:'badge-green',bg:'linear-gradient(135deg,#2e1a0a,#1a0a0a)',desc:'Harsh open-world survival shooter.',minPlayers:1,maxPlayers:40,startFrom:7.99},
+  {id:'longvinter',cat:'survival',name:'Longvinter',icon:'🏝️',tag:'NEW',tagStyle:'badge-cyan',bg:'linear-gradient(135deg,#0a1a2e,#1a2e2e)',desc:'Multiplayer survival on a small island.',minPlayers:1,maxPlayers:32,startFrom:5.99},
+  {id:'ground',cat:'survival',name:'The Front',icon:'🪖',tag:'HOT',tagStyle:'badge-red',bg:'linear-gradient(135deg,#1a1a0a,#2e2e1a)',desc:'Post-apocalyptic survival and base building.',minPlayers:1,maxPlayers:80,startFrom:9.99},
+  {id:'ats',cat:'racing',name:'American Truck Sim',icon:'🚛',tag:'RELAXED',tagStyle:'badge-yellow',bg:'linear-gradient(135deg,#1a1a2e,#2e2e1a)',desc:'Drive trucks across America together.',minPlayers:1,maxPlayers:8,startFrom:5.99},
+  {id:'farming',cat:'strategy',name:'Farming Simulator',icon:'🚜',tag:'POPULAR',tagStyle:'badge-green',bg:'linear-gradient(135deg,#1a2e0a,#2e4a0a)',desc:'Multiplayer farming simulation.',minPlayers:1,maxPlayers:16,startFrom:5.99},
+  {id:'sons',cat:'survival',name:'Sons of the Forest',icon:'🌲',tag:'TRENDING',tagStyle:'badge-yellow',bg:'linear-gradient(135deg,#0a2e0a,#1a3a1a)',desc:'Horror survival in a mysterious forest.',minPlayers:1,maxPlayers:8,startFrom:6.99},
+  {id:'astroneer',cat:'sandbox',name:'Astroneer',icon:'🚀',tag:'RELAXED',tagStyle:'badge-cyan',bg:'linear-gradient(135deg,#0a0a2e,#1a1a3a)',desc:'Space exploration and base building.',minPlayers:1,maxPlayers:4,startFrom:5.99},
+  {id:'norco',cat:'roleplay',name:'Arma Reforger',icon:'🪖',tag:'TACTICAL',tagStyle:'badge-cyan',bg:'linear-gradient(135deg,#0a1a0a,#1a3a1a)',desc:'Military simulation with community mods.',minPlayers:1,maxPlayers:64,startFrom:9.99},
+  {id:'hll',cat:'fps',name:'Hell Let Loose',icon:'⚔️',tag:'TACTICAL',tagStyle:'badge-cyan',bg:'linear-gradient(135deg,#1a1a0a,#3a2a0a)',desc:'WWII strategic team FPS.',minPlayers:2,maxPlayers:100,startFrom:12.99},
+];
+
+const CATS = [
+  {id:'all',label:'All Games',icon:'🎮'},
+  {id:'survival',label:'Survival',icon:'⛏️'},
+  {id:'fps',label:'FPS / Shooter',icon:'🎯'},
+  {id:'sandbox',label:'Sandbox',icon:'🏗️'},
+  {id:'rpg',label:'RPG / Action',icon:'⚔️'},
+  {id:'roleplay',label:'Roleplay',icon:'🎭'},
+  {id:'strategy',label:'Strategy',icon:'🧠'},
+  {id:'racing',label:'Racing',icon:'🏎️'},
+];
+
+let currentCat = 'all', searchTerm = '';
+
+function buildCatTabs() {
+  document.getElementById('catTabs').innerHTML = CATS.map(c =>
+    `<button class="filter-tab${currentCat===c.id?' active':''}" onclick="setCat('${c.id}')">${c.icon} ${c.label}</button>`
+  ).join('');
+}
+
+function setCat(cat) {
+  currentCat = cat;
+  buildCatTabs();
+  renderGames();
+}
+
+function filterGames(v) {
+  searchTerm = v.toLowerCase();
+  renderGames();
+}
+
+function renderGames() {
+  const list = ALL_GAMES.filter(g => {
+    const matchCat = currentCat === 'all' || g.cat === currentCat;
+    const matchSearch = !searchTerm || g.name.toLowerCase().includes(searchTerm) || g.cat.toLowerCase().includes(searchTerm) || g.desc.toLowerCase().includes(searchTerm);
+    return matchCat && matchSearch;
+  });
+  const grid = document.getElementById('fullGamesGrid');
+  const noRes = document.getElementById('noResults');
+  noRes.style.display = list.length === 0 ? 'block' : 'none';
+  grid.innerHTML = list.map(g => {
+    const bs = `background:${g.bg}`;
+    return `<div class="game-full-card reveal" onclick="goToGame('${g.id}')" tabindex="0" role="button" onkeydown="if(event.key==='Enter')goToGame('${g.id}')">
+      <div class="gfc-media">
+        <div class="gfc-visual" style="${bs}">${g.icon}</div>
+        <div class="gfc-grad"></div>
+        <div class="gfc-tags"><span class="badge ${g.tagStyle}">${g.tag}</span></div>
+      </div>
+      <div class="gfc-body">
+        <div class="gfc-name">${g.name}</div>
+        <div class="gfc-cat">${g.cat.toUpperCase()} · From $${g.startFrom}/mo</div>
+        <p style="font-size:.8rem;color:var(--c-text2);line-height:1.6;margin-bottom:.6rem;">${g.desc}</p>
+        <div class="gfc-specs">
+          <span class="gfc-spec">👥 Up to ${g.maxPlayers} players</span>
+          <span class="gfc-spec">⚡ DDoS Protected</span>
+        </div>
+        <button class="btn btn-primary btn-sm" style="width:100%">View Plans →</button>
+      </div>
+    </div>`;
+  }).join('');
+  observeReveal();
+}
+
+function goToGame(id) {
+  window.location.href = `index.html#pricing`;
+  localStorage.setItem('nexushost_selected_game', id);
+}
+
+// Nav scroll
+window.addEventListener('scroll', () => { document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 40); }, {passive:true});
+
+// Mobile menu
+function toggleDrawer(){const o=document.getElementById('navDrawer').classList.toggle('open');document.getElementById('hamburger').classList.toggle('open',o);document.getElementById('navOverlay').classList.toggle('on',o);document.body.style.overflow=o?'hidden':'';}
+function closeDrawer(){document.getElementById('navDrawer').classList.remove('open');document.getElementById('hamburger').classList.remove('open');document.getElementById('navOverlay').classList.remove('on');document.body.style.overflow='';}
+function openAuth(){window.location.href='index.html#login';}
+function doLogout(){localStorage.removeItem('nexushost_user');updateAuthUI(null);}
+function updateAuthUI(u){const on=!!u;document.getElementById('uBar').classList.toggle('on',on);document.getElementById('loginBtn').style.display=on?'none':'inline-flex';if(u){document.getElementById('uAv').textContent=u.name[0].toUpperCase();document.getElementById('uName').textContent=u.name.split(' ')[0];}}
+function toast(t,m,e){const el=document.getElementById('toast');document.getElementById('tTitle').textContent=t;document.getElementById('tMsg').textContent=m;el.className='toast'+(e?' err':'');el.classList.add('on');setTimeout(()=>el.classList.remove('on'),3800);}
+
+// Scroll reveal
+let ro;
+function observeReveal(){if(!ro)ro=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');ro.unobserve(e.target);}});},{threshold:.08});document.querySelectorAll('.reveal:not(.visible)').forEach(el=>ro.observe(el));}
+
+window.addEventListener('load', () => {
+  buildCatTabs();
+  renderGames();
+  const u = JSON.parse(localStorage.getItem('nexushost_user')||'null');
+  if (u) updateAuthUI(u);
+  if (window.matchMedia('(prefers-reduced-motion:reduce)').matches) document.querySelectorAll('.reveal').forEach(el=>{el.classList.add('visible');});
+});
+</script>
+</body>
+</html>

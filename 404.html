@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#040711">
+<title>404 — Page Not Found | NexusHost</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+.error-page{min-height:100svh;display:flex;align-items:center;justify-content:center;text-align:center;position:relative;z-index:1;padding:2rem;}
+.error-code{font-family:'Rajdhani',sans-serif;font-size:clamp(6rem,20vw,14rem);font-weight:700;line-height:1;background:var(--g-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.2rem;position:relative;display:inline-block;}
+.error-code::after{content:'RESPAWN IN';position:absolute;bottom:clamp(16px,3vw,28px);left:50%;transform:translateX(-50%);font-family:'Share Tech Mono',monospace;font-size:clamp(.6rem,.9vw,.72rem);letter-spacing:3px;color:var(--c-text2);-webkit-text-fill-color:var(--c-text2);background:none;white-space:nowrap;}
+.error-title{font-family:'Rajdhani',sans-serif;font-size:clamp(1.5rem,4vw,2.5rem);font-weight:700;color:#fff;margin-bottom:.6rem;}
+.error-sub{font-size:clamp(.88rem,1.3vw,1rem);color:var(--c-text2);max-width:420px;margin:0 auto 2rem;line-height:1.7;}
+.countdown{font-family:'Rajdhani',sans-serif;font-size:2rem;font-weight:700;color:var(--c-accent);margin-bottom:1.5rem;}
+.error-actions{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;}
+.glitch-grid{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0;}
+.glitch-line{position:absolute;height:1px;background:rgba(0,194,232,.15);animation:glitch linear infinite;}
+@keyframes glitch{0%{width:0;opacity:0;left:0}10%{opacity:.8}90%{opacity:.8}100%{width:100%;opacity:0;left:0}}
+</style>
+</head>
+<body>
+<div class="glitch-grid" id="glitchGrid"></div>
+<div class="error-page">
+  <div>
+    <div class="error-code">404</div>
+    <h1 class="error-title">Server Not Found</h1>
+    <p class="error-sub">This page has been wiped, raided, or never existed. Head back to base before the server resets.</p>
+    <div class="countdown" id="countdown">10</div>
+    <div class="error-actions">
+      <a href="index.html" class="btn btn-primary btn-lg">⟵ Back to Home</a>
+      <a href="games.html" class="btn btn-ghost btn-lg">Browse Games</a>
+    </div>
+  </div>
+</div>
+<script>
+// Countdown
+let c = 10;
+const el = document.getElementById('countdown');
+const t = setInterval(() => { c--; el.textContent = c; if (c <= 0) { clearInterval(t); window.location.href = 'index.html'; } }, 1000);
+// Glitch lines
+const grid = document.getElementById('glitchGrid');
+for (let i = 0; i < 8; i++) {
+  const ln = document.createElement('div'); ln.className = 'glitch-line';
+  ln.style.cssText = `top:${Math.random()*100}%;animation-duration:${Math.random()*4+2}s;animation-delay:${Math.random()*-5}s;opacity:.${Math.floor(Math.random()*5+1)}`;
+  grid.appendChild(ln);
+}
+</script>
+</body>
+</html>

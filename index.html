@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="NexusHost — Premium Game Server Hosting. Minecraft, Rust, GTA V, ARK, CS2, Valheim, Palworld and 30+ more games. Deploy in 60 seconds.">
+<meta name="keywords" content="game server hosting, minecraft server, rust server, gta v server, ark server, cs2 server">
+<meta name="theme-color" content="#040711">
+<meta property="og:title" content="NexusHost — Game Server Hosting">
+<meta property="og:description" content="Deploy blazing-fast game servers in 60 seconds. 99.9% uptime. 15 global locations.">
+<meta property="og:type" content="website">
+<title>NexusHost — Premium Game Server Hosting</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+/* ── PAGE-SPECIFIC STYLES ── */
+.hero {
+  position: relative; min-height: 100svh;
+  display: flex; align-items: center;
+  padding: clamp(100px,14vw,140px) 0 clamp(60px,8vw,80px);
+  overflow: hidden;
+}
+.hero-particles { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+.pt { position: absolute; border-radius: 50%; animation: ptFloat linear infinite; opacity: 0; }
+@keyframes ptFloat { 0%{transform:translateY(110vh);opacity:0} 5%{opacity:.6} 90%{opacity:.3} 100%{transform:translateY(-5vh);opacity:0} }
+.hero-inner { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(40px,6vw,80px); align-items: center; position: relative; z-index: 2; }
+.hero-eyebrow { display: inline-flex; align-items: center; gap: .5rem; padding: 5px 14px; border: 1px solid rgba(91,15,255,.4); border-radius: 999px; font-family: 'Share Tech Mono', monospace; font-size: .68rem; letter-spacing: 3px; text-transform: uppercase; color: var(--c-accent2); background: rgba(91,15,255,.08); margin-bottom: 1.4rem; }
+.hero-eyebrow::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--c-accent2); animation: pulseDot 1.5s infinite; }
+.hero h1 { font-family: 'Rajdhani', sans-serif; font-size: clamp(2.6rem,7vw,5.4rem); font-weight: 700; line-height: .95; letter-spacing: -1px; margin-bottom: 1.4rem; }
+.h1-a { display: block; background: linear-gradient(90deg, #fff 0%, rgba(197,216,245,.85) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.h1-b { display: block; background: var(--g-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.hero-desc { font-size: clamp(.9rem,1.5vw,1.05rem); color: var(--c-text2); line-height: 1.8; font-weight: 400; margin-bottom: 2rem; max-width: 520px; }
+.hero-btns { display: flex; gap: .8rem; flex-wrap: wrap; margin-bottom: 2rem; }
+.hero-proof { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.proof-avs { display: flex; }
+.proof-av { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--c-bg); background: var(--g-primary); display: flex; align-items: center; justify-content: center; font-size: .65rem; color: #fff; font-weight: 700; margin-left: -9px; }
+.proof-av:first-child { margin-left: 0; }
+.proof-text { font-size: .8rem; color: var(--c-text2); }
+.proof-text strong { color: var(--c-text); font-weight: 700; }
+/* HERO RIGHT — Live Panel */
+.hero-panel {
+  background: rgba(8,16,43,.9); border: 1px solid var(--c-border);
+  border-radius: var(--r-xl); padding: clamp(22px,3.5vw,36px);
+  backdrop-filter: blur(20px); position: relative; overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.04);
+}
+.hero-panel::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2.5px; background: var(--g-primary); }
+.panel-title { font-family: 'Share Tech Mono', monospace; font-size: .65rem; letter-spacing: 3px; text-transform: uppercase; color: var(--c-text2); margin-bottom: 1.2rem; }
+.panel-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+.ps-item { text-align: center; padding: clamp(12px,2vw,16px); background: rgba(255,255,255,.025); border: 1px solid var(--c-border); border-radius: var(--r-md); }
+.ps-num { font-family: 'Rajdhani', sans-serif; font-size: clamp(1.6rem,3.5vw,2.1rem); font-weight: 700; color: var(--c-accent); line-height: 1; display: block; }
+.ps-lbl { font-size: clamp(.58rem,.8vw,.65rem); text-transform: uppercase; letter-spacing: 2px; color: var(--c-text2); margin-top: 4px; display: block; font-family: 'Share Tech Mono', monospace; }
+.panel-bars { display: flex; flex-direction: column; gap: .7rem; margin-bottom: 1.2rem; }
+.pb-row { display: flex; align-items: center; gap: .6rem; font-size: .74rem; }
+.pb-label { color: var(--c-text2); width: 75px; flex-shrink: 0; font-family: 'Share Tech Mono', monospace; font-size: .65rem; letter-spacing: 1px; }
+.pb-track { flex: 1; height: 4px; background: var(--c-border); border-radius: 2px; overflow: hidden; }
+.pb-fill { height: 100%; border-radius: 2px; }
+.pb-val { font-weight: 700; width: 34px; text-align: right; flex-shrink: 0; font-family: 'Rajdhani', sans-serif; }
+.panel-uptime { display: flex; align-items: center; justify-content: center; gap: .5rem; font-size: .74rem; color: var(--c-green); font-weight: 700; font-family: 'Share Tech Mono', monospace; letter-spacing: 1px; }
+.panel-uptime-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--c-green); animation: pulseDot 2s infinite; }
+
+/* CATEGORIES BAND */
+.categories-band { padding: clamp(32px,5vw,56px) 0; position: relative; z-index: 1; }
+.cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(clamp(130px,16vw,160px), 1fr)); gap: clamp(8px,1.5vw,14px); }
+.cat-card {
+  background: var(--c-panel); border: 1px solid var(--c-border);
+  border-radius: var(--r-lg); padding: clamp(14px,2.5vw,22px) clamp(10px,2vw,16px);
+  text-align: center; cursor: pointer;
+  transition: all .25s var(--ease);
+  display: flex; flex-direction: column; align-items: center; gap: .55rem;
+}
+.cat-card:hover, .cat-card.active {
+  border-color: var(--c-accent); background: rgba(0,194,232,.06);
+  transform: translateY(-3px); box-shadow: var(--glow);
+}
+.cat-icon { font-size: clamp(1.4rem,3vw,1.8rem); line-height: 1; }
+.cat-name { font-family: 'Rajdhani', sans-serif; font-size: clamp(.75rem,1.1vw,.85rem); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--c-text2); transition: color .2s; }
+.cat-card:hover .cat-name, .cat-card.active .cat-name { color: var(--c-accent); }
+.cat-count { font-size: .65rem; color: var(--c-text3); font-family: 'Share Tech Mono', monospace; }
+
+/* GAMES GRID */
+.games-grid-main { display: grid; grid-template-columns: repeat(auto-fill, minmax(clamp(220px,26vw,270px), 1fr)); gap: clamp(12px,2vw,18px); }
+
+/* PRICING TABS */
+.pricing-tabs { display: flex; background: var(--c-panel); border: 1px solid var(--c-border); border-radius: var(--r-full); padding: 4px; gap: 4px; width: fit-content; margin-bottom: clamp(28px,5vw,48px); }
+.ptab { padding: 9px clamp(16px,2.5vw,28px); border-radius: var(--r-full); background: transparent; border: none; font-family: 'Rajdhani', sans-serif; font-size: .85rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--c-text2); cursor: pointer; transition: all .22s; white-space: nowrap; }
+.ptab.active { background: var(--g-primary); color: #fff; box-shadow: 0 2px 12px rgba(91,15,255,.4); }
+
+/* PLANS GRID */
+.plans-grid-main { display: grid; grid-template-columns: repeat(auto-fill, minmax(clamp(270px,28vw,310px), 1fr)); gap: clamp(14px,2vw,22px); }
+
+/* COMPARE TABLE */
+.compare-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.compare-table { width: 100%; border-collapse: collapse; min-width: 600px; }
+.compare-table th { padding: 12px 18px; background: var(--c-panel2); border: 1px solid var(--c-border); font-family: 'Rajdhani', sans-serif; font-size: .82rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--c-text2); text-align: left; }
+.compare-table th:first-child { color: var(--c-text); }
+.compare-table td { padding: 12px 18px; border: 1px solid var(--c-border); font-size: .85rem; color: var(--c-text2); }
+.compare-table td:first-child { font-weight: 600; color: var(--c-text); }
+.compare-table tr:hover td { background: rgba(0,194,232,.02); }
+.compare-table .check { color: var(--c-green); font-size: 1rem; }
+.compare-table .cross { color: var(--c-text3); }
+.compare-table .highlight { background: rgba(0,194,232,.04); }
+
+/* LOCATION MAP */
+.locations-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(clamp(200px,22vw,240px), 1fr)); gap: clamp(10px,1.5vw,14px); margin-top: clamp(28px,5vw,48px); }
+.loc-card { background: var(--c-panel); border: 1px solid var(--c-border); border-radius: var(--r-md); padding: clamp(12px,2vw,18px); display: flex; align-items: center; gap: .8rem; transition: border-color .2s, transform .2s; }
+.loc-card:hover { border-color: var(--c-border2); transform: translateY(-2px); }
+.loc-flag { font-size: 1.5rem; flex-shrink: 0; }
+.loc-info .loc-name { font-family: 'Rajdhani', sans-serif; font-size: .9rem; font-weight: 700; color: #fff; }
+.loc-info .loc-city { font-size: .72rem; color: var(--c-text2); font-family: 'Share Tech Mono', monospace; letter-spacing: 1px; }
+.loc-ping { margin-left: auto; display: flex; align-items: center; gap: .3rem; font-family: 'Rajdhani', sans-serif; font-size: .8rem; font-weight: 700; color: var(--c-green); flex-shrink: 0; }
+.loc-ping .ping-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--c-green); }
+
+/* TRUST SECTION */
+.trust-stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(clamp(140px,18vw,180px), 1fr)); gap: clamp(10px,2vw,16px); margin-top: clamp(28px,5vw,48px); }
+.trust-stat { text-align: center; padding: clamp(18px,3vw,28px); background: var(--c-panel); border: 1px solid var(--c-border); border-radius: var(--r-lg); }
+.trust-num { font-family: 'Rajdhani', sans-serif; font-size: clamp(2rem,4vw,3rem); font-weight: 700; display: block; line-height: 1; margin-bottom: .3rem; background: var(--g-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.trust-label { font-size: clamp(.7rem,.9vw,.78rem); text-transform: uppercase; letter-spacing: 2px; color: var(--c-text2); font-family: 'Share Tech Mono', monospace; }
+
+/* RESPONSIVE ADJUSTMENTS */
+@media (max-width: 1024px) { .hero-inner { grid-template-columns: 1fr; } .hero-panel { max-width: 480px; } }
+@media (max-width: 768px) {
+  .hero-inner { text-align: center; }
+  .hero-desc { max-width: 100%; }
+  .hero-btns, .hero-proof { justify-content: center; }
+  .hero-panel { margin: 0 auto; }
+  .pricing-tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%; }
+  .cta-band { text-align: center; }
+  .cta-actions { justify-content: center; }
+}
+@media (max-width: 480px) { .games-grid-main { grid-template-columns: 1fr 1fr; } .cat-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 360px) { .games-grid-main { grid-template-columns: 1fr; } .cat-grid { grid-template-columns: repeat(2, 1fr); } }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<header class="nav" id="mainNav">
+  <div class="nav-inner">
+    <a href="index.html" class="logo"><span class="logo-main">NEXUS</span><span class="logo-accent">HOST</span></a>
+    <ul class="nav-links">
+      <li><a href="#games" class="active">Games</a></li>
+      <li><a href="games.html">All Games</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#locations">Locations</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#mytickets" id="navTickets" style="display:none">My Tickets</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="user-pill" id="uBar">
+        <div class="user-av" id="uAv">?</div>
+        <span id="uName">User</span>
+        <button class="logout-btn" onclick="doLogout()">LOGOUT</button>
+      </div>
+      <a href="#" class="btn btn-ghost" onclick="openOverlay('ovlLogin');return false;" id="loginBtn">Login</a>
+      <a href="#" class="btn btn-primary" onclick="openTicket();return false;" id="ticketBtn" style="display:none">Support</a>
+      <button class="hamburger" id="hamburger" onclick="toggleDrawer()" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<!-- MOBILE DRAWER -->
+<div class="nav-overlay" id="navOverlay" onclick="closeDrawer()"></div>
+<div class="nav-drawer" id="navDrawer">
+  <ul>
+    <li><a href="#games" onclick="closeDrawer()">🎮 Games</a></li>
+    <li><a href="games.html" onclick="closeDrawer()">📋 All Games</a></li>
+    <li><a href="#pricing" onclick="closeDrawer()">💎 Pricing</a></li>
+    <li><a href="#features" onclick="closeDrawer()">⚡ Features</a></li>
+    <li><a href="#locations" onclick="closeDrawer()">🌍 Locations</a></li>
+    <li><a href="#faq" onclick="closeDrawer()">❓ FAQ</a></li>
+    <li><a href="#mytickets" id="drawerTickets" onclick="closeDrawer()" style="display:none">🎫 My Tickets</a></li>
+  </ul>
+  <div style="display:flex;flex-direction:column;gap:.6rem;">
+    <a href="#" class="btn btn-ghost" onclick="openOverlay('ovlLogin');closeDrawer();return false;" id="drawerLogin">Login / Register</a>
+    <a href="#" class="btn btn-primary" onclick="openTicket();closeDrawer();return false;" id="drawerTicket" style="display:none">Open Ticket</a>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-particles" id="heroParticles"></div>
+  <div class="container">
+    <div class="hero-inner">
+      <!-- LEFT -->
+      <div>
+        <div class="hero-eyebrow anim-fadeup">⚡ Premium Game Server Hosting</div>
+        <h1 class="anim-fadeup anim-d1">
+          <span class="h1-a" id="heroLine1">DOMINATE YOUR</span>
+          <span class="h1-b" id="heroLine2">GAME WORLD</span>
+        </h1>
+        <p class="hero-desc anim-fadeup anim-d2" id="heroSub">Deploy blazing-fast game servers in 60 seconds. 30+ games supported including Minecraft, Rust, GTA V, ARK, and CS2. Instant setup, 99.9% uptime, DDoS-protected.</p>
+        <div class="hero-btns anim-fadeup anim-d3">
+          <a href="#pricing" class="btn btn-primary btn-lg">Get Started →</a>
+          <a href="games.html" class="btn btn-ghost btn-lg">View All Games</a>
+        </div>
+        <div class="hero-proof anim-fadeup anim-d4">
+          <div class="proof-avs">
+            <div class="proof-av">A</div><div class="proof-av">S</div>
+            <div class="proof-av">D</div><div class="proof-av">J</div><div class="proof-av">+</div>
+          </div>
+          <p class="proof-text"><strong>47,000+</strong> gamers trust NexusHost</p>
+        </div>
+      </div>
+      <!-- RIGHT — Live Panel -->
+      <div class="anim-fadeup anim-d3">
+        <div class="hero-panel">
+          <div class="panel-title">⟩ Live Server Stats</div>
+          <div class="panel-stats">
+            <div class="ps-item"><span class="ps-num" data-target="12482">0</span><span class="ps-lbl">Active Servers</span></div>
+            <div class="ps-item"><span class="ps-num" data-target="99.9">0</span><span class="ps-lbl">% Uptime</span></div>
+            <div class="ps-item"><span class="ps-num" data-target="15">0</span><span class="ps-lbl">Locations</span></div>
+            <div class="ps-item"><span class="ps-num" data-target="47">0</span><span class="ps-lbl">K+ Gamers</span></div>
+          </div>
+          <div class="panel-bars">
+            <div class="pb-row">
+              <span class="pb-label">Minecraft</span>
+              <div class="pb-track"><div class="pb-fill" style="width:82%;background:var(--c-green)"></div></div>
+              <span class="pb-val" style="color:var(--c-green)">82%</span>
+            </div>
+            <div class="pb-row">
+              <span class="pb-label">Rust</span>
+              <div class="pb-track"><div class="pb-fill" style="width:65%;background:var(--c-orange)"></div></div>
+              <span class="pb-val" style="color:var(--c-orange)">65%</span>
+            </div>
+            <div class="pb-row">
+              <span class="pb-label">GTA V</span>
+              <div class="pb-track"><div class="pb-fill" style="width:58%;background:var(--c-accent2)"></div></div>
+              <span class="pb-val" style="color:var(--c-accent2)">58%</span>
+            </div>
+            <div class="pb-row">
+              <span class="pb-label">CS2</span>
+              <div class="pb-track"><div class="pb-fill" style="width:44%;background:var(--c-accent)"></div></div>
+              <span class="pb-val" style="color:var(--c-accent)">44%</span>
+            </div>
+            <div class="pb-row">
+              <span class="pb-label">ARK</span>
+              <div class="pb-track"><div class="pb-fill" style="width:37%;background:var(--c-purple)"></div></div>
+              <span class="pb-val" style="color:var(--c-purple)">37%</span>
+            </div>
+          </div>
+          <div class="panel-uptime"><span class="panel-uptime-dot"></span>All systems operational</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE TRUST BAR -->
+<div class="marquee-wrap" style="padding:clamp(14px,2.5vw,20px) 0;border-top:1px solid var(--c-border);border-bottom:1px solid var(--c-border);background:rgba(7,11,24,.8);position:relative;z-index:1;">
+  <div class="marquee-track" id="marqueeTrack">
+    <span class="marquee-item"><span class="mi-dot"></span>Instant 60s Setup</span>
+    <span class="marquee-item"><span class="mi-dot"></span>99.9% Uptime SLA</span>
+    <span class="marquee-item"><span class="mi-dot"></span>1Tbps DDoS Shield</span>
+    <span class="marquee-item"><span class="mi-dot"></span>24/7 Expert Support</span>
+    <span class="marquee-item"><span class="mi-dot"></span>15 Global Nodes</span>
+    <span class="marquee-item"><span class="mi-dot"></span>NVMe SSD Storage</span>
+    <span class="marquee-item"><span class="mi-dot"></span>Daily Auto-Backups</span>
+    <span class="marquee-item"><span class="mi-dot"></span>30+ Games Supported</span>
+    <span class="marquee-item"><span class="mi-dot"></span>One-Click Mods</span>
+    <span class="marquee-item"><span class="mi-dot"></span>Full FTP Access</span>
+    <span class="marquee-item"><span class="mi-dot"></span>72hr Money-Back</span>
+    <span class="marquee-item"><span class="mi-dot"></span>Custom Subdomains</span>
+    <span class="marquee-item"><span class="mi-dot"></span>Instant 60s Setup</span>
+    <span class="marquee-item"><span class="mi-dot"></span>99.9% Uptime SLA</span>
+    <span class="marquee-item"><span class="mi-dot"></span>1Tbps DDoS Shield</span>
+    <span class="marquee-item"><span class="mi-dot"></span>24/7 Expert Support</span>
+    <span class="marquee-item"><span class="mi-dot"></span>15 Global Nodes</span>
+    <span class="marquee-item"><span class="mi-dot"></span>NVMe SSD Storage</span>
+    <span class="marquee-item"><span class="mi-dot"></span>Daily Auto-Backups</span>
+    <span class="marquee-item"><span class="mi-dot"></span>30+ Games Supported</span>
+    <span class="marquee-item"><span class="mi-dot"></span>One-Click Mods</span>
+    <span class="marquee-item"><span class="mi-dot"></span>Full FTP Access</span>
+    <span class="marquee-item"><span class="mi-dot"></span>72hr Money-Back</span>
+    <span class="marquee-item"><span class="mi-dot"></span>Custom Subdomains</span>
+  </div>
+</div>
+
+<!-- CATEGORIES -->
+<section class="categories-band section-alt" id="categories">
+  <div class="container">
+    <div class="section-head reveal" style="text-align:center;">
+      <div class="section-eyebrow" style="justify-content:center;">Game Categories</div>
+      <h2 class="section-title">Browse by Genre</h2>
+    </div>
+    <div class="cat-grid">
+      <div class="cat-card active" onclick="filterByCategory('all',this)"><span class="cat-icon">🎮</span><span class="cat-name">All Games</span><span class="cat-count">30+ titles</span></div>
+      <div class="cat-card" onclick="filterByCategory('survival',this)"><span class="cat-icon">⛏️</span><span class="cat-name">Survival</span><span class="cat-count">8 games</span></div>
+      <div class="cat-card" onclick="filterByCategory('fps',this)"><span class="cat-icon">🎯</span><span class="cat-name">FPS / Shooter</span><span class="cat-count">6 games</span></div>
+      <div class="cat-card" onclick="filterByCategory('rpg',this)"><span class="cat-icon">⚔️</span><span class="cat-name">RPG / Action</span><span class="cat-count">5 games</span></div>
+      <div class="cat-card" onclick="filterByCategory('sandbox',this)"><span class="cat-icon">🏗️</span><span class="cat-name">Sandbox</span><span class="cat-count">4 games</span></div>
+      <div class="cat-card" onclick="filterByCategory('racing',this)"><span class="cat-icon">🏎️</span><span class="cat-name">Racing</span><span class="cat-count">3 games</span></div>
+      <div class="cat-card" onclick="filterByCategory('strategy',this)"><span class="cat-icon">🧠</span><span class="cat-name">Strategy</span><span class="cat-count">3 games</span></div>
+      <div class="cat-card" onclick="filterByCategory('roleplay',this)"><span class="cat-icon">🎭</span><span class="cat-name">Roleplay</span><span class="cat-count">4 games</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- GAMES -->
+<section class="section" id="games">
+  <div class="container">
+    <div class="section-head reveal" style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+      <div>
+        <div class="section-eyebrow">Supported Games</div>
+        <h2 class="section-title">Choose Your Game</h2>
+        <p class="section-sub">Optimized hardware and instant mod support for every title.</p>
+      </div>
+      <a href="games.html" class="btn btn-ghost btn-sm" style="flex-shrink:0;">View All 30+ Games →</a>
+    </div>
+    <div class="games-grid-main" id="gamesGrid"></div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="section section-alt" id="pricing">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">Pricing Plans</div>
+      <h2 class="section-title">Pick Your Plan</h2>
+      <p class="section-sub">Flexible tiers for every community size. Scale up or down anytime, penalty-free.</p>
+    </div>
+    <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:clamp(20px,4vw,36px);">
+      <div class="pricing-tabs" id="gameTabs"></div>
+    </div>
+    <div class="plans-grid-main" id="plansGrid"></div>
+    <!-- COMPARE LINK -->
+    <div style="text-align:center;margin-top:2rem;">
+      <button class="btn btn-ghost btn-sm" onclick="document.getElementById('compareSection').style.display='block';this.style.display='none';">📊 Compare All Plans →</button>
+    </div>
+    <div id="compareSection" style="display:none;margin-top:2rem;">
+      <h3 style="font-family:'Rajdhani',sans-serif;font-size:1.3rem;color:#fff;margin-bottom:1rem;">Plan Comparison</h3>
+      <div class="compare-table-wrap">
+        <table class="compare-table">
+          <thead><tr><th>Feature</th><th>Starter</th><th>Pro</th><th>Elite</th></tr></thead>
+          <tbody>
+            <tr><td>RAM</td><td>2–4 GB</td><td>4–8 GB</td><td class="highlight">8–32 GB</td></tr>
+            <tr><td>CPU Cores</td><td>2–3 vCPU</td><td>4–6 vCPU</td><td class="highlight">8–12 vCPU</td></tr>
+            <tr><td>NVMe Storage</td><td>20–60 GB</td><td>40–120 GB</td><td class="highlight">80–300 GB</td></tr>
+            <tr><td>DDoS Protection</td><td class="check">✓</td><td class="check">✓</td><td class="check highlight">✓</td></tr>
+            <tr><td>Daily Backups</td><td class="cross">Weekly</td><td class="check">Daily</td><td class="check highlight">Daily + On-demand</td></tr>
+            <tr><td>Custom Domain</td><td class="cross">—</td><td class="check">✓</td><td class="check highlight">✓</td></tr>
+            <tr><td>Dedicated IP</td><td class="cross">—</td><td class="cross">—</td><td class="check highlight">✓</td></tr>
+            <tr><td>MySQL Database</td><td class="cross">—</td><td class="check">✓</td><td class="check highlight">✓</td></tr>
+            <tr><td>Priority Support</td><td class="cross">Standard</td><td class="check">Priority</td><td class="check highlight">Premium 24/7</td></tr>
+            <tr><td>Money-Back</td><td class="check">72 hours</td><td class="check">72 hours</td><td class="check highlight">72 hours</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section" id="features">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">Why NexusHost</div>
+      <h2 class="section-title">Built for Gamers</h2>
+      <p class="section-sub">Enterprise-grade infrastructure fine-tuned for game server performance.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(clamp(230px,24vw,260px),1fr));gap:clamp(12px,2vw,18px);" id="featGrid"></div>
+  </div>
+</section>
+
+<!-- LOCATIONS -->
+<section class="section section-alt" id="locations">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">Global Network</div>
+      <h2 class="section-title">15 Locations Worldwide</h2>
+      <p class="section-sub">Play with the lowest latency no matter where your community is based.</p>
+    </div>
+    <div class="locations-grid">
+      <div class="loc-card reveal"><span class="loc-flag">🇺🇸</span><div class="loc-info"><div class="loc-name">New York</div><div class="loc-city">US EAST</div></div><div class="loc-ping"><span class="ping-dot"></span>~5ms</div></div>
+      <div class="loc-card reveal reveal-d1"><span class="loc-flag">🇺🇸</span><div class="loc-info"><div class="loc-name">Los Angeles</div><div class="loc-city">US WEST</div></div><div class="loc-ping"><span class="ping-dot"></span>~8ms</div></div>
+      <div class="loc-card reveal reveal-d2"><span class="loc-flag">🇩🇪</span><div class="loc-info"><div class="loc-name">Frankfurt</div><div class="loc-city">EU CENTRAL</div></div><div class="loc-ping"><span class="ping-dot"></span>~6ms</div></div>
+      <div class="loc-card reveal reveal-d3"><span class="loc-flag">🇬🇧</span><div class="loc-info"><div class="loc-name">London</div><div class="loc-city">EU WEST</div></div><div class="loc-ping"><span class="ping-dot"></span>~7ms</div></div>
+      <div class="loc-card reveal"><span class="loc-flag">🇫🇷</span><div class="loc-info"><div class="loc-name">Paris</div><div class="loc-city">EU SOUTH</div></div><div class="loc-ping"><span class="ping-dot"></span>~6ms</div></div>
+      <div class="loc-card reveal reveal-d1"><span class="loc-flag">🇳🇱</span><div class="loc-info"><div class="loc-name">Amsterdam</div><div class="loc-city">EU NORTH</div></div><div class="loc-ping"><span class="ping-dot"></span>~5ms</div></div>
+      <div class="loc-card reveal reveal-d2"><span class="loc-flag">🇸🇬</span><div class="loc-info"><div class="loc-name">Singapore</div><div class="loc-city">ASIA SE</div></div><div class="loc-ping"><span class="ping-dot"></span>~12ms</div></div>
+      <div class="loc-card reveal reveal-d3"><span class="loc-flag">🇯🇵</span><div class="loc-info"><div class="loc-name">Tokyo</div><div class="loc-city">ASIA EAST</div></div><div class="loc-ping"><span class="ping-dot"></span>~10ms</div></div>
+      <div class="loc-card reveal"><span class="loc-flag">🇮🇳</span><div class="loc-info"><div class="loc-name">Mumbai</div><div class="loc-city">ASIA SOUTH</div></div><div class="loc-ping"><span class="ping-dot"></span>~15ms</div></div>
+      <div class="loc-card reveal reveal-d1"><span class="loc-flag">🇦🇺</span><div class="loc-info"><div class="loc-name">Sydney</div><div class="loc-city">OCEANIA</div></div><div class="loc-ping"><span class="ping-dot"></span>~14ms</div></div>
+      <div class="loc-card reveal reveal-d2"><span class="loc-flag">🇧🇷</span><div class="loc-info"><div class="loc-name">São Paulo</div><div class="loc-city">SOUTH AMERICA</div></div><div class="loc-ping"><span class="ping-dot"></span>~18ms</div></div>
+      <div class="loc-card reveal reveal-d3"><span class="loc-flag">🇨🇦</span><div class="loc-info"><div class="loc-name">Toronto</div><div class="loc-city">CANADA</div></div><div class="loc-ping"><span class="ping-dot"></span>~7ms</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST NUMBERS -->
+<section class="section" id="trust">
+  <div class="container">
+    <div class="section-head reveal" style="text-align:center;">
+      <div class="section-eyebrow" style="justify-content:center;">Trusted Worldwide</div>
+      <h2 class="section-title">The Numbers Speak</h2>
+    </div>
+    <div class="trust-stats reveal">
+      <div class="trust-stat"><span class="trust-num" data-target="47000">0</span><span class="trust-label">Active Customers</span></div>
+      <div class="trust-stat"><span class="trust-num" data-target="12482">0</span><span class="trust-label">Servers Running</span></div>
+      <div class="trust-stat"><span class="trust-num" data-target="99.9">0</span><span class="trust-label">% Uptime</span></div>
+      <div class="trust-stat"><span class="trust-num" data-target="15">0</span><span class="trust-label">Global Locations</span></div>
+      <div class="trust-stat"><span class="trust-num" data-target="30">0</span><span class="trust-label">Games Supported</span></div>
+      <div class="trust-stat"><span class="trust-num" data-target="4">0</span><span class="trust-label">Years of Service</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section section-alt" id="testimonials">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">Community</div>
+      <h2 class="section-title">Trusted by Gamers</h2>
+      <p class="section-sub">Real reviews from real server admins.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(clamp(260px,28vw,300px),1fr));gap:clamp(12px,2vw,18px);" id="testiGrid"></div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="cta-band reveal">
+      <div class="cta-text">
+        <h2>Ready to Deploy Your Server?</h2>
+        <p>Join 47,000+ gamers. Set up in 60 seconds. 72-hour money-back guarantee.</p>
+      </div>
+      <div class="cta-actions">
+        <a href="#pricing" class="btn btn-primary btn-lg">Start Hosting Now →</a>
+        <a href="#" class="btn btn-ghost btn-lg" id="ctaDiscord">Join Our Discord</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section section-alt" id="faq">
+  <div class="container" style="max-width:900px;">
+    <div class="section-head reveal" style="text-align:center;">
+      <div class="section-eyebrow" style="justify-content:center;">FAQ</div>
+      <h2 class="section-title">Common Questions</h2>
+    </div>
+    <div id="faqList">
+      <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)">How fast will my server be set up?<svg class="faq-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-answer"><div class="faq-answer-inner">Your server is deployed and live within 60 seconds of completing your order. Our automated provisioning handles everything — no manual setup, no waiting, no technical knowledge required.</div></div></div>
+      <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)">Can I install mods, plugins, and custom content?<svg class="faq-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-answer"><div class="faq-answer-inner">Yes. We support one-click installation for all major platforms — Forge, Fabric, Paper, Spigot, Oxide/uMod, SourceMod, BepInEx, FiveM resource management, and more. You also get full FTP/SFTP access to upload files manually.</div></div></div>
+      <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)">What is your refund policy?<svg class="faq-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-answer"><div class="faq-answer-inner">We offer a 72-hour money-back guarantee on all new orders. If you're not satisfied for any reason, contact our support team within 72 hours and we'll process a full refund. No questions asked.</div></div></div>
+      <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)">Is DDoS protection included for free?<svg class="faq-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-answer"><div class="faq-answer-inner">Yes, all servers include enterprise-grade DDoS mitigation up to 1Tbps at no extra cost. Our multi-layer protection system automatically detects and filters malicious traffic before it reaches your server, keeping your players connected.</div></div></div>
+      <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)">Can I upgrade or downgrade my plan?<svg class="faq-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-answer"><div class="faq-answer-inner">Absolutely. You can scale your resources up or down at any time through your control panel or by opening a support ticket. Plan changes are applied within minutes and your data is always preserved.</div></div></div>
+      <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)">Do you support server clustering (ARK, Minecraft networks)?<svg class="faq-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-answer"><div class="faq-answer-inner">Yes, we fully support multi-server clustering for ARK Survival, Minecraft BungeeCord/Velocity networks, and other cluster setups. Our support team can help you configure cross-server connections. Open a ticket to get started.</div></div></div>
+      <div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)">What payment methods do you accept?<svg class="faq-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-answer"><div class="faq-answer-inner">We accept all major credit and debit cards (Visa, Mastercard, Amex), PayPal, and cryptocurrency. All payments are processed securely via SSL encryption.</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- MY TICKETS -->
+<section class="section" id="mytickets">
+  <div class="container">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">Support</div>
+      <h2 class="section-title">My Tickets</h2>
+      <p class="section-sub">Track support requests and admin replies in real time.</p>
+    </div>
+    <div id="ticketLoginPrompt" style="text-align:center;padding:clamp(24px,5vw,48px) 0;color:var(--c-text2);">
+      <p style="margin-bottom:1.2rem;font-size:1rem;">Log in to view and manage your support tickets.</p>
+      <button class="btn btn-primary" onclick="openOverlay('ovlLogin')">Login to Continue</button>
+    </div>
+    <div class="tc-wrap" id="tcWrap">
+      <button class="btn btn-primary" style="margin-bottom:1.4rem;" onclick="openTicket()">+ Create New Ticket</button>
+      <div id="ticketList"></div>
+      <p id="noTickets" style="color:var(--c-text2);font-size:.88rem;display:none;">No tickets yet. Create one if you need help!</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="logo"><span class="logo-main">NEXUS</span><span class="logo-accent">HOST</span></a>
+        <p id="footerDesc">Premium game server hosting with enterprise-grade hardware and instant setup. Trusted by 47,000+ gamers worldwide.</p>
+        <div class="footer-social">
+          <a href="#" title="Discord">💬</a><a href="#" title="Twitter">🐦</a>
+          <a href="#" title="GitHub">🐙</a><a href="#" title="YouTube">▶</a><a href="#" title="TikTok">🎵</a>
+        </div>
+      </div>
+      <div class="footer-col"><h4>Games</h4><ul id="footerGames"></ul></div>
+      <div class="footer-col"><h4>Products</h4><ul>
+        <li><a href="games.html">All Games</a></li>
+        <li><a href="pricing.html">Pricing</a></li>
+        <li><a href="#">Control Panel</a></li>
+        <li><a href="#">VoIP / TeamSpeak</a></li>
+        <li><a href="#">Dedicated Servers</a></li>
+      </ul></div>
+      <div class="footer-col"><h4>Company</h4><ul>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#">Status Page</a></li>
+        <li><a href="admin.html">Admin Panel</a></li>
+      </ul></div>
+      <div class="footer-col"><h4>Support</h4><ul>
+        <li><a href="#">Documentation</a></li>
+        <li><a href="#" id="discordLink">Discord</a></li>
+        <li><a href="#mytickets">My Tickets</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms of Service</a></li>
+        <li><a href="#">GDPR</a></li>
+      </ul></div>
+    </div>
+    <hr class="footer-divider">
+    <div class="footer-bottom">
+      <p id="footerCopy">© 2025 NexusHost. All rights reserved.</p>
+      <div class="footer-badges">
+        <span class="footer-badge">SSL Secured</span>
+        <span class="footer-badge">GDPR Ready</span>
+        <span class="footer-badge">99.9% SLA</span>
+        <span class="footer-badge">PCI DSS</span>
+      </div>
+      <div class="status-pill"><div class="status-dot"></div>All systems operational</div>
+    </div>
+  </div>
+</footer>
+
+<!-- ORDER MODAL -->
+<div class="overlay" id="ovlOrder">
+  <div class="modal modal-lg">
+    <div class="modal-header"><h3>Complete Your Order</h3><button class="modal-close" onclick="closeOverlay('ovlOrder')">✕</button></div>
+    <div class="modal-body">
+      <div id="orderFormWrap">
+        <div class="plan-info-bar"><div class="plan-info-icon" id="piIcon">🎮</div><div><div class="plan-info-name" id="piName">Plan</div><div class="plan-info-price" id="piPrice">$0/mo</div></div></div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Full Name *</label><input type="text" class="form-input" id="oName" placeholder="John Doe" autocomplete="name"></div>
+          <div class="form-group"><label class="form-label">Email *</label><input type="email" class="form-input" id="oEmail" placeholder="john@email.com" autocomplete="email"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Discord Username *</label><input type="text" class="form-input" id="oDiscord" placeholder="@username"></div>
+          <div class="form-group"><label class="form-label">Phone (Optional)</label><input type="tel" class="form-input" id="oPhone" placeholder="+1 555 000 0000" autocomplete="tel"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Server Location *</label>
+            <select class="form-input" id="oLocation">
+              <option value="">Select location...</option>
+              <option>🇺🇸 US East (New York)</option><option>🇺🇸 US West (Los Angeles)</option>
+              <option>🇩🇪 EU Central (Frankfurt)</option><option>🇬🇧 EU West (London)</option>
+              <option>🇫🇷 EU South (Paris)</option><option>🇳🇱 EU North (Amsterdam)</option>
+              <option>🇸🇬 Asia SE (Singapore)</option><option>🇯🇵 Asia East (Tokyo)</option>
+              <option>🇮🇳 Asia South (Mumbai)</option><option>🇦🇺 Oceania (Sydney)</option>
+              <option>🇧🇷 South America (São Paulo)</option><option>🇨🇦 Canada (Toronto)</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Billing Cycle</label>
+            <select class="form-input" id="oBilling">
+              <option value="monthly">Monthly</option>
+              <option value="quarterly">Quarterly — 5% off</option>
+              <option value="semi">Semi-Annual — 10% off</option>
+              <option value="annual">Annual — 20% off</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group"><label class="form-label">Server Name</label><input type="text" class="form-input" id="oServerName" placeholder="My Awesome Server"></div>
+        <div class="form-group"><label class="form-label">Mods / Special Requests (Optional)</label><textarea class="form-input" id="oNotes" rows="3" placeholder="Any mods, plugins, or custom setup requirements..."></textarea></div>
+        <div class="form-check" style="margin-bottom:1rem;">
+          <input type="checkbox" id="oTerms">
+          <label for="oTerms">I agree to the <a href="#" style="color:var(--c-accent);">Terms of Service</a> and <a href="#" style="color:var(--c-accent);">Refund Policy</a>. Server setup within 24 hours of confirmation.</label>
+        </div>
+        <button class="btn btn-primary btn-full" onclick="submitOrder()">🚀 Confirm Order</button>
+      </div>
+      <div class="success-wrap" id="orderSuccess"><span class="success-icon">✅</span><h3>Order Submitted!</h3><p>Your order has been sent to the admin team and a Discord notification dispatched. We'll set up your server and contact you within 24 hours.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN MODAL -->
+<div class="overlay" id="ovlLogin">
+  <div class="modal">
+    <div class="modal-header"><h3>Welcome to NexusHost</h3><button class="modal-close" onclick="closeOverlay('ovlLogin')">✕</button></div>
+    <div class="modal-body">
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">Login</button>
+        <button class="auth-tab" id="tabReg" onclick="switchTab('reg')">Register</button>
+      </div>
+      <div id="loginForm">
+        <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="liEmail" placeholder="your@email.com" autocomplete="email"></div>
+        <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" id="liPass" placeholder="••••••••" autocomplete="current-password"></div>
+        <button class="btn btn-primary btn-full" onclick="doLogin()">Login</button>
+      </div>
+      <div id="regForm" style="display:none">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Full Name</label><input type="text" class="form-input" id="rgName" placeholder="John Doe" autocomplete="name"></div>
+          <div class="form-group"><label class="form-label">Discord</label><input type="text" class="form-input" id="rgDiscord" placeholder="@username"></div>
+        </div>
+        <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="rgEmail" placeholder="your@email.com" autocomplete="email"></div>
+        <div class="form-group"><label class="form-label">Password</label><input type="password" class="form-input" id="rgPass" placeholder="••••••••" autocomplete="new-password"></div>
+        <button class="btn btn-primary btn-full" onclick="doRegister()">Create Account</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TICKET MODAL -->
+<div class="overlay" id="ovlTicket">
+  <div class="modal">
+    <div class="modal-header"><h3>Open Support Ticket</h3><button class="modal-close" onclick="closeOverlay('ovlTicket')">✕</button></div>
+    <div class="modal-body">
+      <div id="ticketFormWrap">
+        <div style="background:rgba(0,194,232,.05);border:1px solid rgba(0,194,232,.13);border-radius:8px;padding:.85rem 1rem;margin-bottom:1.2rem;font-size:.82rem;color:var(--c-text2);line-height:1.6;">💬 Average response: &lt;15 minutes. Urgent issues: also join our Discord.</div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Category *</label>
+            <select class="form-input" id="tkCat">
+              <option value="">Select...</option>
+              <option>Server Setup Issue</option><option>Billing Question</option>
+              <option>Technical Problem</option><option>Upgrade / Downgrade</option>
+              <option>Performance Issue</option><option>Mod Installation Help</option>
+              <option>Server Migration</option><option>Cancellation Request</option><option>Other</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Priority</label>
+            <select class="form-input" id="tkPrio">
+              <option value="low">Low</option><option value="medium" selected>Medium</option>
+              <option value="high">High</option><option value="critical">🚨 Critical — Server Down</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group"><label class="form-label">Subject *</label><input type="text" class="form-input" id="tkSubj" placeholder="Brief description of your issue"></div>
+        <div class="form-group"><label class="form-label">Message *</label><textarea class="form-input" id="tkMsg" rows="5" placeholder="Describe in detail. Include server ID, error messages, and reproduction steps..."></textarea></div>
+        <button class="btn btn-primary btn-full" onclick="submitTicket()">📨 Submit Ticket</button>
+      </div>
+      <div class="success-wrap" id="ticketSuccess"><span class="success-icon">🎫</span><h3>Ticket Created!</h3><p>Track it in "My Tickets". We'll notify you on Discord when we reply.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><div class="toast-title" id="tTitle"></div><div class="toast-msg" id="tMsg"></div></div>
+
+<script>
+'use strict';
+/* ── CONFIG ── */
+const CFG_KEY = 'nexushost_config';
+const DEFAULTS = {
+  site:{ name:'NexusHost', tagline:'Premium Game Server Hosting', logo:'NEXUSHOST', desc:'Premium game server hosting. Trusted by 47,000+ gamers worldwide.', discord:'', copyright:'© 2025 NexusHost. All rights reserved.' },
+  hero:{ badge:'⚡ PREMIUM GAME SERVER HOSTING', line1:'DOMINATE YOUR', line2:'GAME WORLD', sub:'Deploy blazing-fast game servers in 60 seconds. 30+ games supported including Minecraft, Rust, GTA V, ARK, and CS2. Instant setup, 99.9% uptime, DDoS-protected.' },
+  games:[
+    {id:'minecraft',cat:'survival',name:'Minecraft',icon:'🟩',tag:'POPULAR',tagStyle:'badge-green',bg:'linear-gradient(135deg,#2d5a27,#1a3d1a)',image:'',visible:true},
+    {id:'rust',cat:'survival',name:'Rust',icon:'🔥',tag:'HOT',tagStyle:'badge-red',bg:'linear-gradient(135deg,#4a1a0a,#8b3a1a)',image:'',visible:true},
+    {id:'gta',cat:'roleplay',name:'GTA V (FiveM)',icon:'🚗',tag:'POPULAR',tagStyle:'badge-purple',bg:'linear-gradient(135deg,#1a1a2e,#0f3460)',image:'',visible:true},
+    {id:'ark',cat:'survival',name:'ARK: Survival',icon:'🦕',tag:'NEW',tagStyle:'badge-cyan',bg:'linear-gradient(135deg,#0d2b1a,#1a4a2a)',image:'',visible:true},
+    {id:'cs2',cat:'fps',name:'Counter-Strike 2',icon:'🎯',tag:'HOT',tagStyle:'badge-red',bg:'linear-gradient(135deg,#1a0d2e,#2d1a4a)',image:'',visible:true},
+    {id:'valheim',cat:'survival',name:'Valheim',icon:'⚔️',tag:'POPULAR',tagStyle:'badge-green',bg:'linear-gradient(135deg,#0a1a2e,#1a3a5a)',image:'',visible:true},
+    {id:'palworld',cat:'survival',name:'Palworld',icon:'🐾',tag:'TRENDING',tagStyle:'badge-yellow',bg:'linear-gradient(135deg,#1a2e0a,#2e4a1a)',image:'',visible:true},
+    {id:'tf2',cat:'fps',name:'Team Fortress 2',icon:'⚙️',tag:'CLASSIC',tagStyle:'badge-orange',bg:'linear-gradient(135deg,#4a2a0a,#8b4a1a)',image:'',visible:true},
+    {id:'7d2d',cat:'survival',name:'7 Days to Die',icon:'🧟',tag:'POPULAR',tagStyle:'badge-green',bg:'linear-gradient(135deg,#1a1a0a,#3a2a0a)',image:'',visible:true},
+    {id:'dayz',cat:'survival',name:'DayZ',icon:'🪖',tag:'POPULAR',tagStyle:'badge-green',bg:'linear-gradient(135deg,#0a1a0a,#1a2a0a)',image:'',visible:true},
+    {id:'squad',cat:'fps',name:'Squad',icon:'🪖',tag:'TACTICAL',tagStyle:'badge-cyan',bg:'linear-gradient(135deg,#0a1a0a,#1a3a1a)',image:'',visible:true},
+    {id:'satisfactory',cat:'sandbox',name:'Satisfactory',icon:'🏭',tag:'NEW',tagStyle:'badge-cyan',bg:'linear-gradient(135deg,#1a0a2e,#2e1a4a)',image:'',visible:true},
+    {id:'terraria',cat:'sandbox',name:'Terraria',icon:'⛏️',tag:'CLASSIC',tagStyle:'badge-orange',bg:'linear-gradient(135deg,#2e1a0a,#4a2a0a)',image:'',visible:true},
+    {id:'garry',cat:'sandbox',name:"Garry's Mod",icon:'🔧',tag:'CLASSIC',tagStyle:'badge-orange',bg:'linear-gradient(135deg,#1a2e2e,#0a1a1a)',image:'',visible:true},
+    {id:'conan',cat:'survival',name:'Conan Exiles',icon:'⚔️',tag:'POPULAR',tagStyle:'badge-green',bg:'linear-gradient(135deg,#2e1a0a,#4a2a0a)',image:'',visible:true},
+    {id:'vrising',cat:'rpg',name:'V Rising',icon:'🧛',tag:'HOT',tagStyle:'badge-red',bg:'linear-gradient(135deg,#1a0a1a,#2e0a2e)',image:'',visible:true},
+  ],
+  plans:[
+    {id:'mc1',game:'minecraft',gameName:'Minecraft',icon:'🟩',name:'Creeper',price:4.99,ram:'2GB',cpu:'2 vCPU',storage:'20GB SSD',players:10,bandwidth:'1Gbps',ddos:true,backups:'Weekly',support:'Standard',image:'',featured:false,ribbon:'',desc:'Perfect for small friend groups.',extras:['Java & Bedrock','1-Click Mods','Control Panel'],visible:true},
+    {id:'mc2',game:'minecraft',gameName:'Minecraft',icon:'🟩',name:'Enderman',price:9.99,ram:'4GB',cpu:'4 vCPU',storage:'40GB SSD',players:30,bandwidth:'1Gbps',ddos:true,backups:'Daily',support:'Priority',image:'',featured:true,ribbon:'BEST VALUE',desc:'Most popular for active communities.',extras:['Java & Bedrock','Forge/Fabric','Custom Domain','MySQL DB'],visible:true},
+    {id:'mc3',game:'minecraft',gameName:'Minecraft',icon:'🟩',name:'Dragon',price:19.99,ram:'8GB',cpu:'6 vCPU',storage:'80GB SSD',players:100,bandwidth:'2Gbps',ddos:true,backups:'Daily',support:'Premium 24/7',image:'',featured:false,ribbon:'',desc:'For large public servers.',extras:['All Features','MySQL DB','Plugin Mgr','FTP Access','Dedicated IP'],visible:true},
+    {id:'rust1',game:'rust',gameName:'Rust',icon:'🔥',name:'Survivor',price:12.99,ram:'4GB',cpu:'4 vCPU',storage:'40GB SSD',players:50,bandwidth:'1Gbps',ddos:true,backups:'Weekly',support:'Standard',image:'',featured:false,ribbon:'',desc:'Small private Rust server.',extras:['Oxide/uMod','Wipe Scheduler'],visible:true},
+    {id:'rust2',game:'rust',gameName:'Rust',icon:'🔥',name:'Warlord',price:24.99,ram:'8GB',cpu:'6 vCPU',storage:'80GB SSD',players:100,bandwidth:'2Gbps',ddos:true,backups:'Daily',support:'Priority',image:'',featured:true,ribbon:'MOST POPULAR',desc:'Ideal for competitive Rust.',extras:['Oxide/uMod','Custom Maps','Rust+ App','Priority Queue'],visible:true},
+    {id:'rust3',game:'rust',gameName:'Rust',icon:'🔥',name:'Emperor',price:44.99,ram:'16GB',cpu:'8 vCPU',storage:'160GB SSD',players:200,bandwidth:'10Gbps',ddos:true,backups:'Daily',support:'Premium 24/7',image:'',featured:false,ribbon:'',desc:'High-performance public Rust.',extras:['Everything','Dedicated IP','Rust+','99.99% SLA'],visible:true},
+    {id:'gta1',game:'gta',gameName:'GTA V',icon:'🚗',name:'Rookie',price:14.99,ram:'4GB',cpu:'4 vCPU',storage:'60GB SSD',players:32,bandwidth:'1Gbps',ddos:true,backups:'Weekly',support:'Standard',image:'',featured:false,ribbon:'',desc:'Entry-level FiveM server.',extras:['FiveM/RAGE','ESX/QBCore'],visible:true},
+    {id:'gta2',game:'gta',gameName:'GTA V',icon:'🚗',name:'Kingpin',price:29.99,ram:'8GB',cpu:'6 vCPU',storage:'100GB SSD',players:64,bandwidth:'2Gbps',ddos:true,backups:'Daily',support:'Priority',image:'',featured:true,ribbon:'BEST VALUE',desc:'Perfect for large RP communities.',extras:['FiveM/RAGE','MySQL','Custom Scripts','Priority'],visible:true},
+    {id:'gta3',game:'gta',gameName:'GTA V',icon:'🚗',name:'Godfather',price:59.99,ram:'16GB',cpu:'10 vCPU',storage:'200GB SSD',players:128,bandwidth:'10Gbps',ddos:true,backups:'Daily',support:'Premium 24/7',image:'',featured:false,ribbon:'',desc:'Large-scale RP server.',extras:['Everything','Dedicated IP','99.99% SLA','Dev Console'],visible:true},
+    {id:'ark1',game:'ark',gameName:'ARK',icon:'🦕',name:'Tribe Starter',price:9.99,ram:'4GB',cpu:'4 vCPU',storage:'60GB SSD',players:20,bandwidth:'1Gbps',ddos:true,backups:'Weekly',support:'Standard',image:'',featured:false,ribbon:'',desc:'Small tribe private server.',extras:['Mod Support','Cluster Ready'],visible:true},
+    {id:'ark2',game:'ark',gameName:'ARK',icon:'🦕',name:'Alpha Tribe',price:22.99,ram:'8GB',cpu:'6 vCPU',storage:'120GB SSD',players:70,bandwidth:'2Gbps',ddos:true,backups:'Daily',support:'Priority',image:'',featured:true,ribbon:'POPULAR',desc:'Full-featured ARK cluster.',extras:['Cluster Maps','Admin Panel','Mod Mgr','Cross-ARK'],visible:true},
+    {id:'cs1',game:'cs2',gameName:'CS2',icon:'🎯',name:'Casual',price:5.99,ram:'2GB',cpu:'2 vCPU',storage:'20GB SSD',players:12,bandwidth:'1Gbps',ddos:true,backups:'Weekly',support:'Standard',image:'',featured:false,ribbon:'',desc:'10-man private server.',extras:['128-Tick','Workshop Maps'],visible:true},
+    {id:'cs2p',game:'cs2',gameName:'CS2',icon:'🎯',name:'Competitive',price:11.99,ram:'4GB',cpu:'4 vCPU',storage:'40GB SSD',players:24,bandwidth:'1Gbps',ddos:true,backups:'Daily',support:'Priority',image:'',featured:true,ribbon:'RECOMMENDED',desc:'Tournament-grade CS2 server.',extras:['128-Tick','GOTV','MatchZy','Stats'],visible:true},
+    {id:'val1',game:'valheim',gameName:'Valheim',icon:'⚔️',name:'Viking',price:7.99,ram:'4GB',cpu:'2 vCPU',storage:'30GB SSD',players:10,bandwidth:'1Gbps',ddos:true,backups:'Weekly',support:'Standard',image:'',featured:false,ribbon:'',desc:'Small Viking crew server.',extras:['Mod Support','Auto-Backup'],visible:true},
+    {id:'val2',game:'valheim',gameName:'Valheim',icon:'⚔️',name:'Jarl',price:14.99,ram:'8GB',cpu:'4 vCPU',storage:'60GB SSD',players:30,bandwidth:'1Gbps',ddos:true,backups:'Daily',support:'Priority',image:'',featured:true,ribbon:'POPULAR',desc:'Large Valheim community.',extras:['BepInEx','Custom Mods','World Backups'],visible:true},
+    {id:'pal1',game:'palworld',gameName:'Palworld',icon:'🐾',name:'Trainer',price:8.99,ram:'4GB',cpu:'4 vCPU',storage:'40GB SSD',players:16,bandwidth:'1Gbps',ddos:true,backups:'Weekly',support:'Standard',image:'',featured:false,ribbon:'',desc:'Play with friends.',extras:['Auto-Updates','Easy Setup'],visible:true},
+    {id:'pal2',game:'palworld',gameName:'Palworld',icon:'🐾',name:'Master',price:17.99,ram:'8GB',cpu:'6 vCPU',storage:'80GB SSD',players:32,bandwidth:'2Gbps',ddos:true,backups:'Daily',support:'Priority',image:'',featured:true,ribbon:'BEST VALUE',desc:'Full guild experience.',extras:['Priority Hardware','Daily Backups','Custom Config'],visible:true},
+    {id:'tf1',game:'tf2',gameName:'TF2',icon:'⚙️',name:'Mann Co.',price:6.99,ram:'2GB',cpu:'2 vCPU',storage:'20GB SSD',players:12,bandwidth:'1Gbps',ddos:true,backups:'Weekly',support:'Standard',image:'',featured:false,ribbon:'',desc:'Classic TF2 server.',extras:['SourceMod','TF2 Plugins'],visible:true},
+    {id:'tf2b',game:'tf2',gameName:'TF2',icon:'⚙️',name:'Saxton Hale',price:13.99,ram:'4GB',cpu:'4 vCPU',storage:'40GB SSD',players:32,bandwidth:'1Gbps',ddos:true,backups:'Daily',support:'Priority',image:'',featured:true,ribbon:'RECOMMENDED',desc:'Full TF2 community server.',extras:['SourceMod','MetaMod','Custom Maps','Stats'],visible:true},
+  ],
+  features:[
+    {icon:'⚡',style:'fi-c',title:'60-Second Deployment',desc:'Your server is live in under 60 seconds. Fully automated provisioning, zero technical knowledge required.'},
+    {icon:'🛡️',style:'fi-p',title:'1Tbps DDoS Shield',desc:'Multi-layer DDoS mitigation up to 1Tbps included free. Stay online, always protected.'},
+    {icon:'🌍',style:'fi-r',title:'15 Global Locations',desc:'Deploy close to your players. North America, Europe, Asia, Oceania — ultra-low latency everywhere.'},
+    {icon:'💾',style:'fi-y',title:'NVMe SSD Storage',desc:'All servers run on NVMe drives for maximum I/O throughput and blazing-fast world load times.'},
+    {icon:'📊',style:'fi-g',title:'Real-Time Dashboard',desc:'Monitor CPU, RAM, player count, and performance. Full control panel with one-click restarts.'},
+    {icon:'🔄',style:'fi-c',title:'Automated Backups',desc:'Daily automated backups with 7-day retention. Restore your world with one click anytime.'},
+    {icon:'🎮',style:'fi-p',title:'One-Click Mod Install',desc:'Forge, Fabric, Paper, Oxide, SourceMod, BepInEx and more — install with a single click.'},
+    {icon:'💬',style:'fi-r',title:'24/7 Expert Support',desc:'Real humans, real expertise. Discord + ticket system. Under 15-minute average response time.'},
+    {icon:'🔧',style:'fi-g',title:'Full FTP Access',desc:'Direct SFTP/FTP access to all server files. Upload anything, edit configs, manage scripts freely.'},
+    {icon:'📈',style:'fi-y',title:'99.9% Uptime SLA',desc:'Guaranteed uptime backed by redundant hardware, power, and automatic failover systems.'},
+  ],
+  testimonials:[
+    {name:'Alex M.',game:'Minecraft Server Owner',av:'A',color:'#00c2e8',stars:5,text:'Been with NexusHost for over a year. The performance is insane and support always replies super fast. Nothing comes close at this price.'},
+    {name:'Sasha K.',game:'Rust Server Admin',av:'S',color:'#5b0fff',stars:5,text:'Switched from another host and the difference is night and day. My 100-player Rust server runs absolutely buttery smooth now.'},
+    {name:'Diego R.',game:'FiveM Community Owner',av:'D',color:'#ff1a5e',stars:5,text:'Running a 64-player FiveM RP server with zero issues. Setup was literally 5 minutes. The panel is clean and intuitive.'},
+    {name:'Jamie L.',game:'ARK Cluster Admin',av:'J',color:'#00e87a',stars:5,text:'The cluster setup support was amazing — they walked me through everything. Running 3 linked ARK maps perfectly.'},
+    {name:'Priya N.',game:'Valheim Community',av:'P',color:'#ffbe00',stars:5,text:'Super easy to use. Server has been up 24/7 for 3 months straight. Perfect for our weekly sessions — no downtime ever.'},
+    {name:'Tyler H.',game:'CS2 Tournament Admin',av:'T',color:'#ff6a00',stars:5,text:'128-tick server, rock-solid uptime. Our team uses it for scrims every day. The custom domain and GOTV features are excellent.'},
+  ]
+};
+
+/* ── SITE DATA ── */
+let selectedPlan = null, currentGameFilter = 'all';
+function D() { try { const r = localStorage.getItem(CFG_KEY); return r ? JSON.parse(r) : DEFAULTS; } catch { return DEFAULTS; } }
+
+/* ── BUILD SITE ── */
+function buildSite() {
+  const d = D(), s = d.site||{}, h = d.hero||{};
+  document.title = (s.name||'NexusHost') + ' — ' + (s.tagline||'Game Hosting');
+  ['navLogo','footerLogoEl'].forEach(id => { const el = document.getElementById(id); if (el) { const lg = s.logo||'NEXUSHOST', half = Math.ceil(lg.length*.6); el.innerHTML = `<span class="logo-main">${lg.substring(0,half)}</span><span class="logo-accent">${lg.substring(half)}</span>`; }});
+  if (document.getElementById('footerDesc')) document.getElementById('footerDesc').textContent = s.desc||'';
+  if (document.getElementById('footerCopy')) document.getElementById('footerCopy').textContent = s.copyright||'';
+  if (document.getElementById('heroLine1')) document.getElementById('heroLine1').textContent = h.line1||DEFAULTS.hero.line1;
+  if (document.getElementById('heroLine2')) document.getElementById('heroLine2').textContent = h.line2||DEFAULTS.hero.line2;
+  if (document.getElementById('heroSub')) document.getElementById('heroSub').textContent = h.sub||DEFAULTS.hero.sub;
+  const discord = s.discord||'';
+  ['discordLink','ctaDiscord'].forEach(id => { const el = document.getElementById(id); if (el && discord) el.href = discord; });
+  buildGames(d.games||DEFAULTS.games);
+  buildGameTabs(d.plans||DEFAULTS.plans);
+  buildPlans(d.plans||DEFAULTS.plans, currentGameFilter);
+  buildFeatures(d.features||DEFAULTS.features);
+  buildTestimonials(d.testimonials||DEFAULTS.testimonials);
+  buildFooterGames(d.games||DEFAULTS.games);
+  observeReveal();
+}
+
+/* ── GAMES ── */
+function buildGames(games, catFilter = 'all') {
+  const list = games.filter(g => g.visible !== false && (catFilter === 'all' || g.cat === catFilter));
+  const CHK_SVG = '<svg style="width:14px;height:14px;margin-bottom:-2px" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>';
+  document.getElementById('gamesGrid').innerHTML = list.map(g => {
+    const bs = g.image ? `background-image:url('${g.image}');background-size:cover;background-position:center` : `background:${g.bg||'#0b1025'}`;
+    return `<div class="game-card reveal" tabindex="0" role="button" aria-label="View ${g.name} plans" onclick="goToGame('${g.id}')" onkeydown="if(event.key==='Enter')goToGame('${g.id}')">
+      <div class="game-visual" style="${bs}">${g.image?'':g.icon}</div>
+      <div class="game-overlay">
+        <div class="game-name">${g.name}</div>
+        <div class="game-tags"><span class="badge ${g.tagStyle||'badge-cyan'}">${g.tag}</span></div>
+        <button class="game-cta">View Plans →</button>
+      </div>
+    </div>`;
+  }).join('');
+  observeReveal();
+}
+
+/* ── GAME TABS ── */
+function buildGameTabs(plans) {
+  const games = [...new Set(plans.filter(p=>p.visible!==false).map(p=>p.game))];
+  const el = document.getElementById('gameTabs');
+  if (!el) return;
+  el.innerHTML = `<button class="ptab${currentGameFilter==='all'?' active':''}" onclick="setGameFilter('all')">All</button>` +
+    games.map(g => { const p = plans.find(x=>x.game===g); return `<button class="ptab${currentGameFilter===g?' active':''}" onclick="setGameFilter('${g}')">${p?p.gameName:g}</button>`; }).join('');
+}
+function setGameFilter(g) {
+  currentGameFilter = g;
+  const d = D();
+  buildGameTabs(d.plans||DEFAULTS.plans);
+  buildPlans(d.plans||DEFAULTS.plans, g);
+}
+
+/* ── PLANS ── */
+function buildPlans(plans, filter = 'all') {
+  const list = filter === 'all' ? plans.filter(p=>p.visible!==false) : plans.filter(p=>p.game===filter&&p.visible!==false);
+  const CHK = `<svg class="spec-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>`;
+  document.getElementById('plansGrid').innerHTML = list.map(p => {
+    const bg = p.image ? `url('${p.image}')` : null;
+    return `<div class="plan-card${p.featured?' featured':''}">
+      <div class="plan-media">
+        ${bg ? `<img src="${p.image}" alt="${p.name}" loading="lazy">` : `<div class="plan-media-ph" style="background:${getGB(p.game)}">${p.icon}</div>`}
+        <div class="plan-media-grad"></div>
+        ${p.featured ? '<div class="plan-feat-tag">Best Value</div>' : ''}
+        ${p.ribbon ? `<div class="plan-ribbon-tag">${p.ribbon}</div>` : ''}
+      </div>
+      <div class="plan-body">
+        <div class="plan-game-name">${p.gameName}</div>
+        <div class="plan-name">${p.name}</div>
+        <div class="plan-desc">${p.desc||''}</div>
+        <div class="plan-price"><span class="sym">$</span><span class="amt">${p.price}</span><span class="per">/mo</span></div>
+        <ul class="plan-specs">
+          <li>${CHK}RAM: <span class="spec-val">${p.ram}</span></li>
+          <li>${CHK}CPU: <span class="spec-val">${p.cpu}</span></li>
+          <li>${CHK}Storage: <span class="spec-val">${p.storage}</span></li>
+          <li>${CHK}Players: <span class="spec-val">Up to ${p.players}</span></li>
+          <li>${CHK}Bandwidth: <span class="spec-val">${p.bandwidth||'1Gbps'}</span></li>
+          <li>${CHK}Backups: <span class="spec-val">${p.backups||'Daily'}</span></li>
+          <li>${CHK}Support: <span class="spec-val">${p.support||'24/7'}</span></li>
+          ${p.ddos ? `<li>${CHK}DDoS Protection: <span class="spec-val">Included</span></li>` : ''}
+        </ul>
+        ${(p.extras||[]).length ? `<div class="plan-extras">${p.extras.map(e=>`<span class="plan-extra">${e}</span>`).join('')}</div>` : ''}
+        <button class="btn-plan" onclick="selectPlan('${p.id}')">Select Plan →</button>
+      </div>
+    </div>`;
+  }).join('') || `<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--c-text2);">No plans available for this game yet.</div>`;
+}
+function getGB(id) { return {minecraft:'linear-gradient(135deg,#2d5a27,#1a3d1a)',rust:'linear-gradient(135deg,#4a1a0a,#8b3a1a)',gta:'linear-gradient(135deg,#1a1a2e,#0f3460)',ark:'linear-gradient(135deg,#0d2b1a,#1a4a2a)',cs2:'linear-gradient(135deg,#1a0d2e,#2d1a4a)',valheim:'linear-gradient(135deg,#0a1a2e,#1a3a5a)',palworld:'linear-gradient(135deg,#1a2e0a,#2e4a1a)',tf2:'linear-gradient(135deg,#4a2a0a,#8b4a1a)'}[id]||'#0b1025'; }
+
+/* ── FEATURES ── */
+function buildFeatures(feats) {
+  document.getElementById('featGrid').innerHTML = feats.map((f,i) =>
+    `<div class="feat-card reveal reveal-d${(i%4)+1}">
+      <div class="feat-icon ${f.style||'fi-c'}" style="${getIconStyle(f.style)}">${f.icon}</div>
+      <h3 class="feat-title">${f.title}</h3>
+      <p class="feat-desc">${f.desc}</p>
+    </div>`).join('');
+}
+function getIconStyle(s) { return {fi_c:'background:rgba(0,194,232,.1);border:1px solid rgba(0,194,232,.25)',fi_p:'background:rgba(91,15,255,.1);border:1px solid rgba(91,15,255,.25)',fi_r:'background:rgba(255,26,94,.1);border:1px solid rgba(255,26,94,.25)',fi_g:'background:rgba(0,232,122,.1);border:1px solid rgba(0,232,122,.25)',fi_y:'background:rgba(255,190,0,.1);border:1px solid rgba(255,190,0,.25)'}[(s||'fi_c').replace('-','_')]||'background:rgba(0,194,232,.1);border:1px solid rgba(0,194,232,.25)'; }
+
+/* ── TESTIMONIALS ── */
+function buildTestimonials(ts) {
+  document.getElementById('testiGrid').innerHTML = ts.map(t =>
+    `<div class="testi-card reveal">
+      <div class="testi-stars">${'★'.repeat(t.stars||5)}</div>
+      <p class="testi-text">"${t.text}"</p>
+      <div class="testi-author">
+        <div class="testi-av" style="background:${t.color||'var(--c-accent)'};">${t.av}</div>
+        <div><div class="testi-name">${t.name}</div><div class="testi-sub">${t.game}</div></div>
+      </div>
+    </div>`).join('');
+}
+
+/* ── FOOTER GAMES ── */
+function buildFooterGames(games) {
+  document.getElementById('footerGames').innerHTML = games.filter(g=>g.visible!==false).slice(0,8).map(g =>
+    `<li><a href="#" onclick="goToGame('${g.id}');return false;">${g.name}</a></li>`).join('');
+}
+
+/* ── CATEGORY FILTER ── */
+function filterByCategory(cat, el) {
+  document.querySelectorAll('.cat-card').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  buildGames(D().games||DEFAULTS.games, cat);
+  document.getElementById('games').scrollIntoView({behavior:'smooth'});
+}
+function goToGame(id) {
+  setGameFilter(id);
+  document.getElementById('pricing').scrollIntoView({behavior:'smooth'});
+}
+
+/* ── SELECT PLAN ── */
+function selectPlan(planId) {
+  const plan = (D().plans||DEFAULTS.plans).find(p=>p.id===planId);
+  if (!plan) return;
+  selectedPlan = plan;
+  document.getElementById('piIcon').textContent = plan.icon;
+  document.getElementById('piName').textContent = `${plan.gameName} — ${plan.name}`;
+  document.getElementById('piPrice').textContent = `$${plan.price}/mo`;
+  document.getElementById('orderFormWrap').style.display = 'block';
+  document.getElementById('orderSuccess').style.display = 'none';
+  openOverlay('ovlOrder');
+}
+
+/* ── ORDER ── */
+function submitOrder() {
+  const n=document.getElementById('oName').value.trim(), e=document.getElementById('oEmail').value.trim(),
+        d=document.getElementById('oDiscord').value.trim(), l=document.getElementById('oLocation').value;
+  if (!n||!e||!d||!l) return toast('Missing Info','Please fill all required fields.',true);
+  if (!document.getElementById('oTerms').checked) return toast('Terms Required','Please accept the Terms of Service.',true);
+  const order={id:Date.now(),plan:selectedPlan,customer:{name:n,email:e,discord:d,phone:document.getElementById('oPhone').value,location:l,billing:document.getElementById('oBilling').value,serverName:document.getElementById('oServerName').value,notes:document.getElementById('oNotes').value},status:'pending',timestamp:new Date().toISOString()};
+  const orders=JSON.parse(localStorage.getItem('nexushost_orders')||'[]');
+  orders.unshift(order); localStorage.setItem('nexushost_orders',JSON.stringify(orders));
+  sendWH('order',order);
+  document.getElementById('orderFormWrap').style.display='none';
+  document.getElementById('orderSuccess').style.display='block';
+}
+
+/* ── TICKET ── */
+function submitTicket() {
+  const u=JSON.parse(localStorage.getItem('nexushost_user')||'null');
+  if (!u) { closeOverlay('ovlTicket'); openOverlay('ovlLogin'); return; }
+  const cat=document.getElementById('tkCat').value, subj=document.getElementById('tkSubj').value.trim(), msg=document.getElementById('tkMsg').value.trim(), prio=document.getElementById('tkPrio').value;
+  if (!cat||!subj||!msg) return toast('Missing Info','Please fill all required fields.',true);
+  const tk={id:'TKT-'+Date.now(),user:u.email,userName:u.name,discord:u.discord||'',category:cat,subject:subj,message:msg,priority:prio,status:'open',timestamp:new Date().toISOString(),replies:[]};
+  const tks=JSON.parse(localStorage.getItem('nexushost_tickets')||'[]');
+  tks.unshift(tk); localStorage.setItem('nexushost_tickets',JSON.stringify(tks));
+  sendWH('ticket',tk);
+  document.getElementById('ticketFormWrap').style.display='none';
+  document.getElementById('ticketSuccess').style.display='block';
+  setTimeout(()=>{ closeOverlay('ovlTicket'); renderTickets(); }, 2400);
+}
+function renderTickets() {
+  const u=JSON.parse(localStorage.getItem('nexushost_user')||'null');
+  if (!u) { document.getElementById('ticketLoginPrompt').style.display='block'; document.getElementById('tcWrap').classList.remove('on'); return; }
+  document.getElementById('ticketLoginPrompt').style.display='none';
+  document.getElementById('tcWrap').classList.add('on');
+  const tks=JSON.parse(localStorage.getItem('nexushost_tickets')||'[]').filter(t=>t.user===u.email);
+  document.getElementById('noTickets').style.display=tks.length===0?'block':'none';
+  document.getElementById('ticketList').innerHTML=tks.map(t=>`
+    <div class="ticket-item">
+      <div class="ticket-top"><span class="ticket-status ts-${t.status}">${t.status.toUpperCase()}</span><span class="ticket-subject">${t.subject}</span><span class="ticket-date">${new Date(t.timestamp).toLocaleDateString()}</span></div>
+      <div class="ticket-meta">${t.category} · ${t.priority} priority</div>
+      <div class="ticket-msg">${t.message.substring(0,140)}${t.message.length>140?'...':''}</div>
+      ${(t.replies||[]).map(r=>`<div class="ticket-reply"><div class="ticket-reply-from">Support Team — ${new Date(r.timestamp).toLocaleString()}</div><div class="ticket-reply-msg">${r.message}</div></div>`).join('')}
+    </div>`).join('');
+}
+
+/* ── WEBHOOK ── */
+function sendWH(type, data) {
+  const url = localStorage.getItem('nexushost_webhook'); if (!url) return;
+  const embed = type==='order' ? {title:'🛒 New Order',color:0x00c2e8,fields:[{name:'Customer',value:data.customer.name,inline:true},{name:'Email',value:data.customer.email,inline:true},{name:'Discord',value:data.customer.discord,inline:true},{name:'Plan',value:`${data.plan.gameName} — ${data.plan.name}`,inline:true},{name:'Price',value:`$${data.plan.price}/mo`,inline:true},{name:'Billing',value:data.customer.billing,inline:true},{name:'Location',value:data.customer.location,inline:false},{name:'Notes',value:data.customer.notes||'None',inline:false}],timestamp:data.timestamp,footer:{text:'NexusHost'}} : {title:'🎫 New Ticket',color:0x5b0fff,fields:[{name:'ID',value:data.id,inline:true},{name:'User',value:data.userName,inline:true},{name:'Discord',value:data.discord||'N/A',inline:true},{name:'Category',value:data.category,inline:true},{name:'Priority',value:data.priority,inline:true},{name:'Subject',value:data.subject,inline:false},{name:'Message',value:data.message.substring(0,300),inline:false}],timestamp:data.timestamp,footer:{text:'NexusHost Support'}};
+  fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:'NexusHost',embeds:[embed]})}).catch(()=>{});
+}
+
+/* ── AUTH ── */
+function doLogin() {
+  const e=document.getElementById('liEmail').value.trim(), p=document.getElementById('liPass').value;
+  if (!e||!p) return toast('Error','Please enter email and password.',true);
+  const u=(JSON.parse(localStorage.getItem('nexushost_users')||'[]')).find(x=>x.email===e&&x.password===p);
+  if (!u) return toast('Login Failed','Invalid email or password.',true);
+  localStorage.setItem('nexushost_user',JSON.stringify(u));
+  closeOverlay('ovlLogin'); updateAuthUI(u); toast('Welcome Back!',`Logged in as ${u.name}.`); renderTickets();
+}
+function doRegister() {
+  const name=document.getElementById('rgName').value.trim(), discord=document.getElementById('rgDiscord').value.trim(), email=document.getElementById('rgEmail').value.trim(), pw=document.getElementById('rgPass').value;
+  if (!name||!email||!pw) return toast('Error','Please fill all required fields.',true);
+  if (pw.length<6) return toast('Error','Password must be at least 6 characters.',true);
+  const users=JSON.parse(localStorage.getItem('nexushost_users')||'[]');
+  if (users.find(u=>u.email===email)) return toast('Error','Email already registered.',true);
+  const u={name,discord,email,password:pw,role:'user',created:new Date().toISOString()};
+  users.push(u); localStorage.setItem('nexushost_users',JSON.stringify(users)); localStorage.setItem('nexushost_user',JSON.stringify(u));
+  closeOverlay('ovlLogin'); updateAuthUI(u); toast('Account Created!',`Welcome, ${name}!`); renderTickets();
+}
+function doLogout() { localStorage.removeItem('nexushost_user'); updateAuthUI(null); renderTickets(); toast('Logged Out','See you next time!'); }
+function updateAuthUI(u) {
+  const on=!!u;
+  document.getElementById('uBar').classList.toggle('on',on);
+  document.getElementById('loginBtn').style.display=on?'none':'inline-flex';
+  document.getElementById('ticketBtn').style.display=on?'inline-flex':'none';
+  document.getElementById('drawerLogin').style.display=on?'none':'inline-flex';
+  document.getElementById('drawerTicket').style.display=on?'inline-flex':'none';
+  ['navTickets','drawerTickets'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display=on?'block':'none';});
+  if (u) { document.getElementById('uAv').textContent=u.name[0].toUpperCase(); document.getElementById('uName').textContent=u.name.split(' ')[0]; }
+}
+function switchTab(t) {
+  document.getElementById('tabLogin').classList.toggle('active',t==='login');
+  document.getElementById('tabReg').classList.toggle('active',t==='reg');
+  document.getElementById('loginForm').style.display=t==='login'?'block':'none';
+  document.getElementById('regForm').style.display=t==='reg'?'block':'none';
+}
+
+/* ── OVERLAYS ── */
+function openOverlay(id){document.getElementById(id).classList.add('open');document.body.style.overflow='hidden';}
+function closeOverlay(id){document.getElementById(id).classList.remove('open');document.body.style.overflow='';}
+function openTicket(){const u=JSON.parse(localStorage.getItem('nexushost_user')||'null');if(!u){openOverlay('ovlLogin');return;}document.getElementById('ticketFormWrap').style.display='block';document.getElementById('ticketSuccess').style.display='none';openOverlay('ovlTicket');}
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeOverlay(o.id);}));
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.overlay.open').forEach(o=>o.classList.remove('open'));document.body.style.overflow='';}});
+
+/* ── MOBILE MENU ── */
+function toggleDrawer(){const o=document.getElementById('navDrawer').classList.toggle('open');document.getElementById('hamburger').classList.toggle('open',o);document.getElementById('navOverlay').classList.toggle('on',o);document.body.style.overflow=o?'hidden':'';}
+function closeDrawer(){document.getElementById('navDrawer').classList.remove('open');document.getElementById('hamburger').classList.remove('open');document.getElementById('navOverlay').classList.remove('on');document.body.style.overflow='';}
+
+/* ── NAVBAR SCROLL ── */
+window.addEventListener('scroll',()=>{document.getElementById('mainNav').classList.toggle('scrolled',window.scrollY>40);},{passive:true});
+
+/* ── FAQ ── */
+function toggleFaq(el){el.closest('.faq-item').classList.toggle('open');}
+
+/* ── SCROLL REVEAL ── */
+let revealObserver;
+function observeReveal(){
+  if(!revealObserver)revealObserver=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');revealObserver.unobserve(e.target);}});},{threshold:.1,rootMargin:'0px 0px -35px 0px'});
+  document.querySelectorAll('.reveal:not(.visible)').forEach(el=>revealObserver.observe(el));
+}
+
+/* ── COUNTERS ── */
+function animateCounters(selector='.ps-num[data-target]'){
+  document.querySelectorAll(selector).forEach(el=>{
+    const target=parseFloat(el.dataset.target),isF=target%1!==0;
+    let cur=0;const step=target/60;
+    const t=setInterval(()=>{cur=Math.min(cur+step,target);el.textContent=isF?cur.toFixed(1):Math.floor(cur).toLocaleString();if(cur>=target)clearInterval(t);},16);
+  });
+}
+
+/* ── PARTICLES ── */
+function spawnParticles(){
+  const c=document.getElementById('heroParticles');
+  for(let i=0;i<55;i++){const p=document.createElement('div');p.className='pt';const sz=Math.random()*3+1;p.style.cssText=`left:${Math.random()*100}%;width:${sz}px;height:${sz}px;background:${Math.random()>.5?'var(--c-accent)':'var(--c-accent2)'};animation-duration:${Math.random()*20+14}s;animation-delay:${Math.random()*-22}s;`;c.appendChild(p);}
+}
+
+/* ── TOAST ── */
+function toast(title,msg,err=false){const t=document.getElementById('toast');document.getElementById('tTitle').textContent=title;document.getElementById('tMsg').textContent=msg;t.className='toast'+(err?' err':'');t.classList.add('on');setTimeout(()=>t.classList.remove('on'),3800);}
+
+/* ── INIT ── */
+window.addEventListener('load',()=>{
+  buildSite(); spawnParticles(); observeReveal();
+  const u=JSON.parse(localStorage.getItem('nexushost_user')||'null');
+  if(u){updateAuthUI(u);renderTickets();}else renderTickets();
+  // Counter triggers
+  new IntersectionObserver(e=>{if(e[0].isIntersecting){animateCounters('.ps-num[data-target]');animateCounters('.trust-num[data-target]');}},{threshold:.3}).observe(document.querySelector('.hero-panel'));
+  window.addEventListener('storage',e=>{if(e.key===CFG_KEY)buildSite();});
+  if(window.matchMedia('(prefers-reduced-motion:reduce)').matches)document.querySelectorAll('.anim-fadeup,.reveal').forEach(el=>{el.style.animation='none';el.classList.add('visible');});
+});
+</script>
+</body>
+</html>
